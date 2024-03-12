@@ -10,10 +10,10 @@ runs:
   using: "composite"
   steps:
     - name: remove previous build folder
-      shell: zsh
+      shell: zsh {0}
       run: rm -rf ./build
     - name: git clean
-      shell: zsh
+      shell: zsh {0}
       run: git clean -ffdq || true
     # Checkout
     - name: Checkout repository
