@@ -1,11 +1,11 @@
 name: Checkout
 description: Manual Clean and Checkout
-
 inputs:
   ref:
     type: string
     default: main
-
+    required: false
+    
 jobs:
   using: "composite"
   steps:
