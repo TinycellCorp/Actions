@@ -1,0 +1,24 @@
+name: Checkout
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        default: main
+jobs:
+  checkout:
+    name: Manual Clean and Checkout
+    runs-on: self-hosted
+    steps:
+      - run: rm -rf ./build
+      - run: git clean -ffdq || true
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          clean: false
+          lfs: true
+          submodules: recursive
+          fetch-depth: 0
+          ref: ${{ inputs.ref }}
