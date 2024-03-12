@@ -1,0 +1,17 @@
+name: Setup Unity
+description: "install unity with modules"
+
+runs:
+  using: "composite"
+  steps:
+    - name: read unity version
+      id: read-unity-version
+      shell: zsh {0}
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+      run: |
+        echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+        echo "unity-version=$(read-unity-version.sh)" >> $GITHUB_OUTPUT
+    - name: print unity version
+      shell: zsh {0}
+      run: echo ${{ steps.read-unity-version.outputs.unity-version }}
