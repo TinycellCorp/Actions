@@ -44,7 +44,7 @@ jobs:
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
       - name: Artifact Upload to slack (Android)
-        if: ${{ inputs.platform == Android }}
+        if: ${{ inputs.platform == 'Android' }}
         run: |
           curl -v -F file=@build/Android.apk \
             -F "initial_comment=${{ inputs.platform }} build completed" \
