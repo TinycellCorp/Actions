@@ -1,0 +1,13 @@
+name: cURL Sample
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on:
+      - self-hosted
+      - macOS
+    steps:
+      - shell: zsh {0}
+        run: curl --version
