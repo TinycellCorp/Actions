@@ -19,8 +19,8 @@ jobs:
         run: |
           cd build &&
           pwd &&
-          curl --form "file=@test.txt" \
+          curl --form file=@test.txt \
           --form "initial_comment=${{ inputs.platform }} build completed" \
-          --form "channels=${{ inputs.channels }}" \
+          --form channels=${{ inputs.channels }} \
           --form "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
           https://slack.com/api/files.upload
