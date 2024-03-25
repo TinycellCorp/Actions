@@ -13,6 +13,8 @@ on:
       platform:
         required: false
         default: Android
+      channels:
+        required: true
       
 jobs:
   run:
@@ -41,3 +43,11 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
+      - name: Artifact Upload to slack (Android)
+        if: ${{ inputs.platform == Android }}
+        run: |
+          curl -v -F file=@build/Android.apk \
+            -F "initial_comment=${{ inputs.platform }} build completed" \
+            -F channels=${{ inputs.channels }} \
+            -F "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            https://slack.com/api/files.upload
