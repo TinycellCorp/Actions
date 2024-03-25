@@ -9,4 +9,7 @@ jobs:
       - self-hosted
       - macOS
     steps:
+      - run: which curl
+      - shell: zsh {0}
+        run: which curl
       - run: curl --version && curl --help
