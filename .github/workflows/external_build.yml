@@ -45,10 +45,9 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
       - name: Artifact Upload to slack (Android)
         if: ${{ inputs.platform == 'Android' }}
-        shell: zsh {0}
         run: |
-          curl -v -F file=@${{ github.workspace }}/build/Android.apk \
-            -F "initial_comment=${{ inputs.platform }} build completed" \
-            -F channels=${{ inputs.channels }} \
-            -F "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-            https://slack.com/api/files.upload
+          curl -v# -F file=@build/Android.apk \
+          -F "initial_comment=${{ inputs.platform }} build completed" \
+          -F channels=${{ inputs.channels }} \
+          -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+          https://slack.com/api/files.upload
