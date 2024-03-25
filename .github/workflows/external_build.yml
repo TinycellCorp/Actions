@@ -47,7 +47,7 @@ jobs:
         if: ${{ matrix.targetPlatform == 'Android' }}
         run: |
           curl -v# -F file=@build/Android/Android.apk \
-          -F "initial_comment=${{ github.repository }} (${{ github.ref_name }}) ${{ inputs.platform }} Build\n${{ github.sha }}" \
+          -F initial_comment="${{ inputs.repo }} (${{ inputs.ref }}) ${{ inputs.platform }} Build\n${{ github.sha }}" \
           -F channels=${{ inputs.channels }} \
           -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
           https://slack.com/api/files.upload
