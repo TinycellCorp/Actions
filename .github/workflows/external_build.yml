@@ -1,0 +1,43 @@
+name: External Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        required: true
+      ref:
+        required: true
+        default: main
+      token:
+        required: true
+      platform:
+        required: false
+        default: Android
+      
+jobs:
+  run:
+    runs-on: 
+      - self-hosted
+      - macOS
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - ${{ inputs.platform }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repo }}
+          ref: ${{ inputs.ref }}
+          token: ${{ inputs.token }}
+      - uses: maxnowack/local-cache@v2
+        with:
+          path: Library
+          key: ${{ runner.os }}-${{ matrix.targetPlatform }}
+      - uses: siren403/unity-builder@custom
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: ${{ matrix.targetPlatform }}
