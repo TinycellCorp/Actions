@@ -18,8 +18,8 @@ jobs:
       - name: FileUpload to slack
         run: |
           pwd &&
-          curl -F "file=@test.txt" \
-            -F "initial_comment=${{ inputs.platform }} build completed" \
-            -F "channels=${{ inputs.channels }}" \
-            -F "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-            https://slack.com/api/files.upload
+          curl --form "file=@test.txt" \
+          --form "initial_comment=${{ inputs.platform }} build completed" \
+          --form "channels=${{ inputs.channels }}" \
+          --form "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+          https://slack.com/api/files.upload
