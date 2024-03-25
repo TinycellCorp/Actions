@@ -10,4 +10,4 @@ jobs:
       - macOS
     steps:
       - shell: zsh {0}
-        run: curl --version
+        run: curl --version && curl --help
