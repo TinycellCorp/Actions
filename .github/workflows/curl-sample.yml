@@ -2,7 +2,10 @@ name: cURL Sample
 
 on:
   workflow_dispatch:
-
+    inputs:
+      channel:
+        required: true
+      
 jobs:
   run:
     runs-on:
@@ -17,10 +20,8 @@ jobs:
       - run: mkdir build && echo test >> build/test.txt
       - name: FileUpload to slack
         run: |
-          cd build &&
-          pwd &&
-          curl --form file=@test.txt \
-          --form "initial_comment=${{ inputs.platform }} build completed" \
-          --form channels=${{ inputs.channels }} \
-          --form "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+          curl -F file=@build/test.txt \
+          -F "initial_comment=text" \
+          -F channels=${{ inputs.channel }} \
+          -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
           https://slack.com/api/files.upload
