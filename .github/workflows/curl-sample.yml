@@ -20,7 +20,7 @@ jobs:
       - run: mkdir build && echo test >> build/test.txt
       - name: FileUpload to slack
         run: |
-          curl -F file=@build/test.txt \
+          curl -v# -F file=@build/test.txt \
           -F "initial_comment=text" \
           -F channels=${{ inputs.channel }} \
           -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
