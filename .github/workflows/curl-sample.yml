@@ -14,10 +14,11 @@ jobs:
         run: which curl
       - run: curl --version && curl --help
       - uses: actions/checkout@v4
-      - run: mkdir build && echo test >> build/test.txt
+      - run: mkdir build && echo test >> build/test.txt && cd build
       - name: FileUpload to slack
         run: |
-          curl -F "file=@${{ github.workspace }}/build/test.txt" \
+          pwd &&
+          curl -F "file=@test.txt" \
             -F "initial_comment=${{ inputs.platform }} build completed" \
             -F "channels=${{ inputs.channels }}" \
             -F "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
