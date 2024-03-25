@@ -13,6 +13,7 @@ jobs:
       - shell: zsh {0}
         run: which curl
       - run: curl --version && curl --help
+      - uses: actions/checkout@v4
       - run: mkdir build && echo test >> build/test.txt
       - name: FileUpload to slack
         run: |
