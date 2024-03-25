@@ -14,9 +14,10 @@ jobs:
         run: which curl
       - run: curl --version && curl --help
       - uses: actions/checkout@v4
-      - run: mkdir build && echo test >> build/test.txt && cd build
+      - run: mkdir build && echo test >> build/test.txt
       - name: FileUpload to slack
         run: |
+          cd build &&
           pwd &&
           curl --form "file=@test.txt" \
           --form "initial_comment=${{ inputs.platform }} build completed" \
