@@ -46,7 +46,7 @@ jobs:
       - name: Artifact Upload to slack (Android)
         if: ${{ inputs.platform == 'Android' }}
         run: |
-          curl -v -F file=@build/Android.apk \
+          curl -v -F file=@${{ github.workspace }}/build/Android.apk \
             -F "initial_comment=${{ inputs.platform }} build completed" \
             -F channels=${{ inputs.channels }} \
             -F "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
