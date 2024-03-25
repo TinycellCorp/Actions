@@ -47,7 +47,7 @@ jobs:
         if: ${{ inputs.platform == 'Android' }}
         run: |
           curl -v# -F file=@build/Android/Android.apk \
-          -F "initial_comment=${{ inputs.platform }} build completed" \
+          -F "initial_comment=${{ github.repository }} (${{ github.ref_name }}) ${{ inputs.platform }} Build" \
           -F channels=${{ inputs.channels }} \
           -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
           https://slack.com/api/files.upload
