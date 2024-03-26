@@ -46,9 +46,16 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
       - name: Artifact Upload to slack (Android)
         if: ${{ matrix.targetPlatform == 'Android' }}
-        run: |
-          curl -# -F file=@build/Android/Android.apk \
-          -F initial_comment="${{ inputs.repo }} (${{ inputs.ref }}) ${{ inputs.platform }} Build" \
-          -F channels=${{ inputs.channels }} \
-          -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-          https://slack.com/api/files.upload
+        uses: adrey/slack-file-upload-action@master
+        with:
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          path: build/Android/Android.apk
+          channel: general
+      # - name: Artifact Upload to slack (Android)
+      #   if: ${{ matrix.targetPlatform == 'Android' }}
+      #   run: |
+      #     curl -# -F file=@build/Android/Android.apk \
+      #     -F initial_comment="${{ inputs.repo }} (${{ inputs.ref }}) ${{ inputs.platform }} Build" \
+      #     -F channels=${{ inputs.channels }} \
+      #     -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+      #     https://slack.com/api/files.upload
