@@ -46,20 +46,12 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
       - name: Artifact Upload to slack (Android)
         if: ${{ matrix.targetPlatform == 'Android' }}
+      - name: Artifact Upload to slack (Android)
         uses: MeilCli/slack-upload-file@v4
         with:
-          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel_id: ${{ inputs.channels }}
+          slack_token: ${{ inputs.token }}
+          channel_id: ${{ inputs.channel }}
+          file_path: 'build/Android/Android.apk'
+          file_name: '${{ github.event.repository.name }} (${{ github.ref_name }}) - ${{ github.sha }}.apk'
           file_type: 'apk'
-          file_name: 'build/Android/Android.apk'
-          title: 'title of file'
-          initial_comment: 'post by slack-upload-file'
-          # content: 'file content'
-      # - name: Artifact Upload to slack (Android)
-      #   if: ${{ matrix.targetPlatform == 'Android' }}
-      #   run: |
-      #     curl -# -F file=@build/Android/Android.apk \
-      #     -F initial_comment="${{ inputs.repo }} (${{ inputs.ref }}) ${{ inputs.platform }} Build" \
-      #     -F channels=${{ inputs.channels }} \
-      #     -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-      #     https://slack.com/api/files.upload
+          initial_comment: '${{ github.repository }} (${{ github.ref_name }}) ${{ inputs.platform }} Build'
