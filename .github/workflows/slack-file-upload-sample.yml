@@ -1,4 +1,4 @@
-name: Slack file upload sample
+name: Slack file upload Sample
 
 on:
   workflow_dispatch:
