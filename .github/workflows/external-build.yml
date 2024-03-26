@@ -51,10 +51,10 @@ jobs:
         if: ${{ matrix.targetPlatform == 'Android' }}
         uses: MeilCli/slack-upload-file@v4
         with:
-          slack_token: ${{ inputs.token }}
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel_id: ${{ inputs.channels }}
           file_path: 'build/Android/Android.apk'
-          file_name: 'Android.apk'
-          # file_name: '${{ inputs.name }} (${{ inputs.ref }}) - ${{ github.sha }}.apk'
+          # file_name: 'Android.apk'
+          file_name: '${{ inputs.name }} (${{ inputs.ref }}) - ${{ github.sha }}.apk'
           file_type: 'apk'
           initial_comment: '${{ inputs.repo }} (${{ inputs.ref }}) ${{ inputs.platform }} Build'
