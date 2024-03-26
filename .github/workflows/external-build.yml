@@ -3,6 +3,9 @@ name: External Build
 on:
   workflow_dispatch:
     inputs:
+      name:
+        required: false
+        default: Artifact
       repo:
         required: true
       ref:
@@ -49,8 +52,8 @@ jobs:
         uses: MeilCli/slack-upload-file@v4
         with:
           slack_token: ${{ inputs.token }}
-          channel_id: ${{ inputs.channel }}
+          channel_id: ${{ inputs.channels }}
           file_path: 'build/Android/Android.apk'
-          file_name: '${{ github.event.repository.name }} (${{ github.ref_name }}) - ${{ github.sha }}.apk'
+          file_name: '${{ inputs.name }} (${{ inputs.ref }}) - ${{ github.sha }}.apk'
           file_type: 'apk'
-          initial_comment: '${{ github.repository }} (${{ github.ref_name }}) ${{ inputs.platform }} Build'
+          initial_comment: '${{ inputs.repo }} (${{ inputs.ref }}) ${{ inputs.platform }} Build'
