@@ -46,11 +46,15 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
       - name: Artifact Upload to slack (Android)
         if: ${{ matrix.targetPlatform == 'Android' }}
-        uses: adrey/slack-file-upload-action@master
+        uses: MeilCli/slack-upload-file@v4
         with:
-          token: ${{ secrets.SLACK_BOT_TOKEN }}
-          path: build/Android/Android.apk
-          channel: general
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel_id: ${{ inputs.channels }}
+          file_type: 'apk'
+          file_name: 'build/Android/Android.apk'
+          title: 'title of file'
+          initial_comment: 'post by slack-upload-file'
+          # content: 'file content'
       # - name: Artifact Upload to slack (Android)
       #   if: ${{ matrix.targetPlatform == 'Android' }}
       #   run: |
