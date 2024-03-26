@@ -1,0 +1,26 @@
+name: Slack file upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      token:
+        required: true
+      channel:
+        required: true
+
+jobs:
+  run:
+    runs-on:
+      - self-hosted
+      - macOS
+    steps:
+      - name: Artifact Upload to slack (Android)
+        uses: MeilCli/slack-upload-file@v4
+        with:
+          slack_token: ${{ inputs.token }}
+          channel_id: ${{ inputs.channel }}
+          content: 'file content'
+          file_type: 'apk'
+          file_name: 'build/Android/Android.apk'
+          title: 'title of file'
+          initial_comment: 'post by slack-upload-file'
