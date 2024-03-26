@@ -56,4 +56,5 @@ jobs:
           file_path: 'build/Android/Android.apk'
           file_name: '${{ inputs.name }} (${{ inputs.ref }}) - ${{ github.sha }}.apk'
           file_type: 'apk'
+          title: 'title'
           initial_comment: '${{ inputs.repo }} (${{ inputs.ref }}) ${{ inputs.platform }} Build'
