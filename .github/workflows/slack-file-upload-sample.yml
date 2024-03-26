@@ -19,8 +19,8 @@ jobs:
         with:
           slack_token: ${{ inputs.token }}
           channel_id: ${{ inputs.channel }}
-          content: 'file content'
+          file_path: 'build/Android/Android.apk'
+          file_name: 'Android.apk'
           file_type: 'apk'
-          file_name: 'build/Android/Android.apk'
           title: 'title of file'
           initial_comment: 'post by slack-upload-file'
