@@ -32,6 +32,7 @@ jobs:
           repository: ${{ inputs.repo }}
           ref: ${{ inputs.ref }}
           token: ${{ inputs.token }}
+          submodules: 'true'
       - uses: maxnowack/local-cache@v2
         with:
           path: Library
