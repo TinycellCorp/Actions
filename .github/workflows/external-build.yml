@@ -46,7 +46,6 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
       - name: Artifact Upload to slack (Android)
         if: ${{ matrix.targetPlatform == 'Android' }}
-      - name: Artifact Upload to slack (Android)
         uses: MeilCli/slack-upload-file@v4
         with:
           slack_token: ${{ inputs.token }}
