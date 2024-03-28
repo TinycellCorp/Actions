@@ -32,7 +32,7 @@ jobs:
           - iOS
           # - ${{ inputs.platform }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: siren403/checkout@custom
         with:
           repository: ${{ inputs.repo }}
           ref: ${{ inputs.ref }}
