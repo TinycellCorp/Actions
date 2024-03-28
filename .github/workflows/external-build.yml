@@ -28,7 +28,9 @@ jobs:
       fail-fast: false
       matrix:
         targetPlatform:
-          - ${{ inputs.platform }}
+          - Android
+          - iOS
+          # - ${{ inputs.platform }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,14 +49,14 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
-      - name: Artifact Upload to slack (Android)
-        if: ${{ matrix.targetPlatform == 'Android' }}
-        uses: MeilCli/slack-upload-file@v4
-        with:
-          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel_id: ${{ inputs.channels }}
-          file_path: 'build/Android/Android.apk'
-          # file_name: 'Android.apk'
-          file_name: '${{ inputs.name }} (${{ inputs.ref }}) - ${{ github.sha }}.apk'
-          file_type: 'apk'
-          initial_comment: '${{ inputs.repo }} (${{ inputs.ref }}) ${{ inputs.platform }} Build'
+      # - name: Artifact Upload to slack (Android)
+      #   if: ${{ matrix.targetPlatform == 'Android' }}
+      #   uses: MeilCli/slack-upload-file@v4
+      #   with:
+      #     slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     channel_id: ${{ inputs.channels }}
+      #     file_path: 'build/Android/Android.apk'
+      #     # file_name: 'Android.apk'
+      #     file_name: '${{ inputs.name }} (${{ inputs.ref }}) - ${{ github.sha }}.apk'
+      #     file_type: 'apk'
+      #     initial_comment: '${{ inputs.repo }} (${{ inputs.ref }}) ${{ inputs.platform }} Build'
