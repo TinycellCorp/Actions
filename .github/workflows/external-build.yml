@@ -38,6 +38,8 @@ jobs:
           ref: ${{ inputs.ref }}
           token: ${{ inputs.token }}
           submodules: 'true'
+          excludes: |
+            build
       - uses: maxnowack/local-cache@v2
         with:
           path: Library
