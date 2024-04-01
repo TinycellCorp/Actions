@@ -1,0 +1,14 @@
+name: Cache
+description: Unity library cache
+inputs:
+  platform:
+    type: string
+    required: true
+    
+runs:
+  using: "composite"
+  steps:
+    - uses: maxnowack/local-cache@v2
+      with:
+        path: Library
+        key: ${{ runner.os }}-${{ inputs.platform }}
