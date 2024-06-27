@@ -1,0 +1,37 @@
+name: Get job id
+description: Request jobs and search for job id
+inputs:
+  name:
+    type: string
+    description: Job name
+    required: true
+  token:
+    type: string
+    description: Github Token
+    required: true
+    
+outputs:
+  id:
+    value: ${{ steps.job-id.outputs.id }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Request jobs
+      id: job-id
+      shell: zsh {0}
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        id=$(gh api \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/$REPO/actions/runs/$RUN_ID/jobs \
+          --jq '.jobs[] | select(.name == "${{ inputs.name }}") | .id')
+
+        if [ -z "$id" ]; then
+          echo "::error::Not found job name"
+          exit 1
+        fi
+        
+        echo "id=$id" >> $GITHUB_OUTPUT
