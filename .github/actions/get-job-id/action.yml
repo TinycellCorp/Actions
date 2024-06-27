@@ -19,7 +19,6 @@ runs:
   steps:
     - name: Request jobs
       id: job-id
-      shell: zsh {0}
       env:
         GH_TOKEN: ${{ inputs.token }}
       run: |
