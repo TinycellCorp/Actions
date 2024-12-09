@@ -15,4 +15,3 @@ jobs:
           repository: 'TinycellCorp/auth-gate'
           sparse-checkout: |
             Packages/AuthGate
-          path: 'SparseCheckout'
