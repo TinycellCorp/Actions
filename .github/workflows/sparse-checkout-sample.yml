@@ -1,0 +1,17 @@
+name: sparse-checkout sample
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sparse-checkout:
+    runs-on:
+      - self-hosted
+      - macOX
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: 'TinycellCorp/auth-gate'
+          sparse-checkout: 'Packages/AuthGate'
+          path: 'SparseCheckout'
