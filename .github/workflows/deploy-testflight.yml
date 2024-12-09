@@ -24,12 +24,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'true'
-      - uses: actions/checkout@v4
-        with:
-          repository: TinycellCorp/Actions
-          path: Actions
-          sparse-checkout: |
-            src/fastlane
       - uses: TinycellCorp/Actions/.github/actions/cache@main
         with:
           platform: iOS
@@ -42,6 +36,13 @@ jobs:
           gitPrivateToken: ${{ github.token }}
           targetPlatform: iOS
           skipActivation: true
+      - name: Checkout fastlane
+        uses: actions/checkout@v4
+        with:
+          repository: TinycellCorp/Actions
+          path: Actions
+          sparse-checkout: |
+            src/fastlane
       - name: Copy fastlane files
         run: cp Actions/src/fastlane/ build/iOS/iOS
       - name: Run deploy lane
