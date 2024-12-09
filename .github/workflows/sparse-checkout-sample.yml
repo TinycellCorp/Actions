@@ -13,5 +13,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: 'TinycellCorp/auth-gate'
-          sparse-checkout: 'Packages/AuthGate'
+          sparse-checkout: |
+            /Packages/AuthGate/
           path: 'SparseCheckout'
