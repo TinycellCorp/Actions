@@ -1,7 +1,20 @@
 name: Deploy testflight
 on:
   workflow_call:
-
+    inputs:
+      app-identifier:
+        type: string
+        required: true
+      apple-id:
+        type: string
+        required: true
+      itc-team-id:
+        type: string
+        required: true
+      team-id:
+        type: string
+        required: true
+      
 jobs:
   build:
     runs-on:
@@ -11,6 +24,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'true'
+      - uses: actions/checkout@v4
+        with:
+          repository: TinycellCorp/Actions
+          path: Actions
+          sparse-checkout: |
+            src/fastlane
       - uses: TinycellCorp/Actions/.github/actions/cache@main
         with:
           platform: iOS
@@ -23,3 +42,14 @@ jobs:
           gitPrivateToken: ${{ github.token }}
           targetPlatform: iOS
           skipActivation: true
+      - name: Copy fastlane files
+        run: cp Actions/src/fastlane/ build/iOS/iOS
+      - name: Run deploy lane
+        env:
+          APP_IDENTIFIER: ${{ inputs.app-identifier }}
+          APPLE_ID: ${{ inputs.apple-id }}
+          ITC_TEAM_ID: ${{ inputs.itc-team-id }}
+          TEAM_ID: ${{ inputs.team-id }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
+        run: bundle exec fastlane ios deploy_testflight
