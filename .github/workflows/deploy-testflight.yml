@@ -44,7 +44,7 @@ jobs:
           sparse-checkout: |
             src/fastlane
       - name: Copy fastlane files
-        run: cp Actions/src/fastlane/ build/iOS/iOS
+        run: cp -R Actions/src/fastlane/ build/iOS/iOS
       - name: Run deploy lane
         env:
           APP_IDENTIFIER: ${{ inputs.app-identifier }}
