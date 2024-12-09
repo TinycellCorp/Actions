@@ -7,7 +7,7 @@ jobs:
   sparse-checkout:
     runs-on:
       - self-hosted
-      - macOX
+      - macOS
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
