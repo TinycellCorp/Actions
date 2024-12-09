@@ -53,4 +53,4 @@ jobs:
           TEAM_ID: ${{ inputs.team-id }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
-        run: bundle exec fastlane ios deploy_testflight
+        run: cd build/iOS/iOS && bundle exec fastlane ios deploy_testflight
