@@ -1,0 +1,9 @@
+channel: ${{ env.CHANNEL_ID }}
+text: ${{ env.TITLE }}
+ts: ${{ env.TS }}
+attachments:
+  - color: ${{ env.COLOR }}
+    fields:
+      - title: "Status"
+        short: true
+        value: ${{ env.MESSAGE }}

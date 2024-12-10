@@ -41,7 +41,7 @@ runs:
         method: chat.postMessage
         token: ${{ inputs.bot-token }}
         payload-file-path: "${{ github.action_path }}/../payloads/status-message.json"
-        payload-templated: false
+        payload-templated: true
         # payload: |
         #   channel: ${{ inputs.channel-id }}
         #   text: "${{ inputs.title }}"
