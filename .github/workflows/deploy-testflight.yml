@@ -14,6 +14,9 @@ on:
       team-id:
         type: string
         required: true
+      app-store-connect-app-info-apple-id:
+        type: string
+        required: true
       
 jobs:
   build:
@@ -52,5 +55,6 @@ jobs:
           ITC_TEAM_ID: ${{ inputs.itc-team-id }}
           TEAM_ID: ${{ inputs.team-id }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          PILOT_APPLE_ID: ${{ inputs.app-store-connect-app-info-apple-id }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
         run: cd build/iOS/iOS && bundle exec fastlane ios deploy_testflight
