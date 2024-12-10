@@ -31,6 +31,11 @@ runs:
   steps:
     - uses: slackapi/slack-github-action@v2.0.0
       id: slack
+      env:
+        CHANNEL_ID: ${{ inputs.channel-id }}
+        TITLE: ${{ inputs.title }}
+        COLOR: ${{ inputs.color }}
+        MESSAGE: ${{ inputs.message }}
       with:
         errors: ${{ inputs.errors }}
         method: chat.postMessage
