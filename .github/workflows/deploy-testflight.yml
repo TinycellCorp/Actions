@@ -47,7 +47,7 @@ jobs:
       - uses: TinycellCorp/Actions/.github/actions/cache@main
         with:
           platform: iOS
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
@@ -73,7 +73,7 @@ jobs:
             src/fastlane
       - name: Copy fastlane files
         run: cp -R Actions/src/fastlane/ build/iOS/iOS
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
@@ -98,7 +98,7 @@ jobs:
     needs: [ deploy ]
     if: success()
     steps:
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
@@ -113,7 +113,7 @@ jobs:
     needs: [ deploy ]
     if: failure()
     steps:
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
