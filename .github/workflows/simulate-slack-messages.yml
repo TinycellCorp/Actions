@@ -12,6 +12,7 @@ jobs:
       - self-hosted
       - macOS
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/slack/status-message/started
         id: slack-started
         with:
