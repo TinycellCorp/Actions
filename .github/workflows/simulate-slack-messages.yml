@@ -49,5 +49,5 @@ jobs:
           color: "#0000FF"
           message: |
             Finished
-            <This is a <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>
           ts: ${{ steps.slack-started.outputs.ts }}
