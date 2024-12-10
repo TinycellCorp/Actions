@@ -22,12 +22,12 @@ jobs:
         with:
           errors: true
           method: auth.test
-          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          token: ${{ secrets.HASSAN_BOT_TOKEN }}
       - uses: ./.github/actions/slack/status-message/started
         id: slack-started
         with:
           errors: true
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          bot-token: ${{ secrets.HASSAN_BOT_TOKEN }}
           channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
           color: "#FF0000"
@@ -38,7 +38,7 @@ jobs:
       - uses: ./.github/actions/slack/status-message/updated
         with:
           errors: true
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          bot-token: ${{ secrets.HASSAN_BOT_TOKEN }}
           channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
           color: "#00FF00"
@@ -50,7 +50,7 @@ jobs:
       - uses: ./.github/actions/slack/status-message/updated
         with:
           errors: true
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          bot-token: ${{ secrets.HASSAN_BOT_TOKEN }}
           channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
           color: "#0000FF"
