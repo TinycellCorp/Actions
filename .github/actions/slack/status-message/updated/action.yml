@@ -30,17 +30,25 @@ runs:
   steps:
     - uses: slackapi/slack-github-action@v2.0.0
       id: slack
+      env:
+        CHANNEL_ID: ${{ inputs.channel-id }}
+        TITLE: ${{ inputs.title }}
+        COLOR: ${{ inputs.color }}
+        MESSAGE: ${{ inputs.message }}
+        TS: ${{ inputs.ts }}
       with:
         errors: ${{ inputs.errors }}
         method: chat.update
         token: ${{ inputs.bot-token }}
-        payload: |
-          channel: ${{ inputs.channel-id }}
-          ts: "${{ inputs.ts }}"
-          text: "${{ inputs.title }}"
-          attachments:
-            - color: "${{ inputs.color }}"
-              fields:
-                - title: "Status"
-                  short: true
-                  value: "${{ inputs.message }}"
+        payload-file-path: "${{ github.action_path }}/../payloads/status-message.yml"
+        payload-templated: true
+        # payload: |
+        #   channel: ${{ inputs.channel-id }}
+        #   ts: "${{ inputs.ts }}"
+        #   text: "${{ inputs.title }}"
+        #   attachments:
+        #     - color: "${{ inputs.color }}"
+        #       fields:
+        #         - title: "Status"
+        #           short: true
+        #           value: "${{ inputs.message }}"
