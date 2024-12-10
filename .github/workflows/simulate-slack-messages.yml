@@ -47,5 +47,7 @@ jobs:
           channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
           color: "#0000FF"
-          message: "Finished"
+          message: |
+            Finished
+            <This is a <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>
           ts: ${{ steps.slack-started.outputs.ts }}
