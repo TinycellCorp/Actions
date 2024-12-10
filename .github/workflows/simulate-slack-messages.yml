@@ -52,7 +52,7 @@ jobs:
           channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
           color: "#00ff00"
-          message: "Finished <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
+          message: "Finished"
           ts: ${{ steps.slack-started.outputs.ts }}
       - if: ${{ inputs.force-failure }}
         run: exit 1
@@ -70,5 +70,5 @@ jobs:
           channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
           color: "#ff0000"
-          message: "Failed <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
+          message: "Failed\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
           ts: ${{ needs.send-messages.outputs.ts }}
