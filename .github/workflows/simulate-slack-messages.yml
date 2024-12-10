@@ -2,9 +2,13 @@ name: Simulate slack messages
 
 on:
   workflow_dispatch:
-
-env:
-  CHANNEL_ID: C06SQLRK28Z # bot-test
+    inputs:
+      channel-id:
+        description: "Channel ID"
+        required: true
+      webhook-url:
+        description: "Webhook URL"
+        required: true
 
 jobs:
   send-messages:
@@ -24,7 +28,7 @@ jobs:
         with:
           errors: true
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.CHANNEL_ID }}
+          channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
           color: "#FF0000"
           message: "Started"
@@ -35,7 +39,7 @@ jobs:
         with:
           errors: true
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.CHANNEL_ID }}
+          channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
           color: "#00FF00"
           message: "Updated"
@@ -47,8 +51,24 @@ jobs:
         with:
           errors: true
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.CHANNEL_ID }}
+          channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
           color: "#0000FF"
           message: "Finished"
           ts: ${{ steps.slack-started.outputs.ts }}
+  webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: slackapi/slack-github-action@v2.0.0
+        with:
+          errors: true
+          webhook: ${{ inputs.webhook-url }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*GitHub Action build result*"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "GitHub Action build result"
