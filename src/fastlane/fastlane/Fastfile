@@ -34,6 +34,7 @@ platform :ios do
 
     build_app(workspace: "Unity-iPhone.xcworkspace", scheme: "Unity-iPhone")
 
+    # apple_id (env.PILOT_APPLE_ID): use app store connect > app > app information > apple id
     upload_to_testflight(
       skip_waiting_for_build_processing: true
     )
