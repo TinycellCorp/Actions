@@ -12,6 +12,12 @@ on:
       force-failure:
         type: boolean
         default: false
+      or-default:
+        type: string
+
+env:
+  VALUE: ${{ inputs.or-default || 'default' }}
+
 jobs:
   send-messages:
     runs-on:
@@ -19,6 +25,8 @@ jobs:
     outputs:
       ts: ${{ steps.slack-started.outputs.ts }}
     steps:
+      - run: echo ${{ env.VALUE }}
+      - run: exit 1
       - uses: actions/checkout@v4
       - uses: ./.github/actions/slack/status-message/started
         id: slack-started
