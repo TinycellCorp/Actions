@@ -35,12 +35,13 @@ runs:
         errors: ${{ inputs.errors }}
         method: chat.postMessage
         token: ${{ inputs.bot-token }}
-        payload: |
-          channel: ${{ inputs.channel-id }}
-          text: "${{ inputs.title }}"
-          attachments:
-            - color: "${{ inputs.color }}"
-              fields:
-                - title: "Status"
-                  short: true
-                  value: "${{ inputs.message }}"
+        payload-file-path: "${{ github.action_path }}/../payloads/status-message.json"
+        # payload: |
+        #   channel: ${{ inputs.channel-id }}
+        #   text: "${{ inputs.title }}"
+        #   attachments:
+        #     - color: "${{ inputs.color }}"
+        #       fields:
+        #         - title: "Status"
+        #           short: true
+        #           value: "${{ inputs.message }}"

@@ -1,0 +1,16 @@
+{
+    "channel": "${{ inputs.channel-id }}",
+    "text": "${{ inputs.title }}",
+    "attachments": [
+        {
+            "color": "${{ inputs.color }}",
+            "fields": [
+                {
+                    "title": "Status",
+                    "short": true,
+                    "value": "${{ inputs.message }}"
+                }
+            ]
+        }
+    ]
+}
