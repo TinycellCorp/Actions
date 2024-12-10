@@ -9,8 +9,9 @@ env:
 jobs:
   send-messages:
     runs-on:
-      - self-hosted
-      - macOS
+      - ubuntu-latest
+      # - self-hosted
+      # - macOS
     steps:
       - uses: actions/checkout@v4
       - uses: slackapi/slack-github-action@v2.0.0
