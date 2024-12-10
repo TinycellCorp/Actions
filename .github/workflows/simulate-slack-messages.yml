@@ -12,8 +12,6 @@ on:
       force-failure:
         type: boolean
         default: false
-      from-vars: 
-        default: ${{ vars.SAMPLE }}
 
 jobs:
   send-messages:
