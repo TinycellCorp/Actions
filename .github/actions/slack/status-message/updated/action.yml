@@ -1,0 +1,41 @@
+name: Slack updated message
+description: Status updated message for Slack
+inputs:
+  bot-token:
+    type: string
+    required: true
+  channel-id:
+    type: string
+    required: true
+  title:
+    type: string
+    required: true
+  color:
+    type: string
+    required: true
+  message:
+    type: string
+    required: true
+  ts:
+    type: string
+    required: true
+    description: "get from slack/status-message/started"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: slackapi/slack-github-action@v2.0.0
+      id: slack
+      with:
+        method: chat.update
+        token: ${{ inputs.bot-token }}
+        payload: |
+          channel: ${{ inputs.channel-id }}
+          ts: "${{ inputs.ts }}"
+          attachments:
+            - pretext: "${{ inputs.title }}",
+              color: "${{ inputs.color }}",
+              fields:
+                - title: "Status",
+                  short: true,
+                  value: "${{ inputs.message }}"

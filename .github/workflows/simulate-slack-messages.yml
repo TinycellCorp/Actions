@@ -1,0 +1,44 @@
+name: Simulate slack messages
+
+on:
+  workflow_dispatch:
+
+env:
+  CHANNEL_ID: C06SQLRK28Z # bot-test
+
+jobs:
+  send-messages:
+    runs-on:
+      - self-hosted
+      - macOS
+    steps:
+      - uses: ./.github/actions/slack/status-message/started
+        id: slack-started
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.CHANNEL_ID }}
+          title: "Simulating slack messages"
+          color: "#FF0000"
+          message: "Started"
+      - uses: GuillaumeFalourd/wait-sleep-action@v1
+        with:
+          time: "5" # for 60 seconds
+      - uses: ./.github/actions/slack/status-message/updated
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.CHANNEL_ID }}
+          title: "Simulating slack messages"
+          color: "#00FF00"
+          message: "Updated"
+          ts: ${{ steps.slack-started.outputs.ts }}
+      - uses: GuillaumeFalourd/wait-sleep-action@v1
+        with:
+          time: "5" # for 60 seconds
+      - uses: ./.github/actions/slack/status-message/updated
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.CHANNEL_ID }}
+          title: "Simulating slack messages"
+          color: "#0000FF"
+          message: "Finished"
+          ts: ${{ steps.slack-started.outputs.ts }}

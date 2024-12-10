@@ -1,0 +1,41 @@
+name: Slack started message
+description: Status started message for Slack
+inputs:
+  bot-token:
+    type: string
+    required: true
+  channel-id:
+    type: string
+    required: true
+  title:
+    type: string
+    required: true
+  color:
+    type: string
+    required: true
+  message:
+    type: string
+    required: true
+
+outputs:
+  ts:
+    description: "Timestamp of the message (actually message ID)"
+    value: ${{ steps.slack.outputs.ts }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: slackapi/slack-github-action@v2.0.0
+      id: slack
+      with:
+        method: chat.postMessage
+        token: ${{ inputs.bot-token }}
+        payload: |
+          channel: ${{ inputs.channel-id }}
+          attachments:
+            - pretext: "${{ inputs.title }}",
+              color: "${{ inputs.color }}",
+              fields:
+                - title: "Status",
+                  short: true,
+                  value: "${{ inputs.message }}"
