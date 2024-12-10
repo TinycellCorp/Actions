@@ -61,14 +61,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: slackapi/slack-github-action@v2.0.0
+        id: slack-started
         with:
           errors: true
           webhook: ${{ inputs.webhook-url }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*GitHub Action build result*"
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "GitHub Action build result"
+            text: "*Simulating slack messages*"
+            attachments:
+              - color: "#FF0000"
+                fields:
+                  - title: "Status"
+                    short: true
+                    value: "Started"
+      - uses: GuillaumeFalourd/wait-sleep-action@v1
+        with:
+          time: "5" # for 60 seconds
+      - uses: slackapi/slack-github-action@v2.0.0
+        with:
+          errors: true
+          webhook: ${{ inputs.webhook-url }}
+          webhook-type: incoming-webhook
+          payload: |
+            ts: "${{ steps.slack-started.outputs.ts }}"
+            text: "*Simulating slack messages*"
+            attachments:
+              - color: "#00FF00"
+                fields:
+                  - title: "Status"
+                    short: true
+                    value: "Updated"
