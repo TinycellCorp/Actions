@@ -6,9 +6,9 @@ on:
       channel-id:
         description: "Channel ID"
         required: true
-
-env:
-  SLACK_ERRORS: false
+      errors:
+        type: boolean
+        default: false
 
 jobs:
   send-messages:
@@ -19,7 +19,7 @@ jobs:
       - uses: ./.github/actions/slack/status-message/started
         id: slack-started
         with:
-          errors: ${{ env.SLACK_ERRORS }}
+          errors: ${{ inputs.errors }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
@@ -30,7 +30,7 @@ jobs:
           time: "5" # for 60 seconds
       - uses: ./.github/actions/slack/status-message/updated
         with:
-          errors: ${{ env.SLACK_ERRORS }}
+          errors: ${{ inputs.errors }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
@@ -42,7 +42,7 @@ jobs:
           time: "5" # for 60 seconds
       - uses: ./.github/actions/slack/status-message/updated
         with:
-          errors: ${{ env.SLACK_ERRORS }}
+          errors: ${{ inputs.errors }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ inputs.channel-id }}
           title: "Simulating slack messages"
