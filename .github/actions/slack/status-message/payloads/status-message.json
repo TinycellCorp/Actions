@@ -1,6 +1,7 @@
 {
     "channel": "${{ env.CHANNEL_ID }}",
     "text": "${{ env.TITLE }}",
+    "ts": "${{ env.TS }}",
     "attachments": [
         {
             "color": "${{ env.COLOR }}",

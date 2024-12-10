@@ -40,7 +40,7 @@ runs:
         errors: ${{ inputs.errors }}
         method: chat.update
         token: ${{ inputs.bot-token }}
-        payload-file-path: "${{ github.action_path }}/../payloads/status-message.yml"
+        payload-file-path: "${{ github.action_path }}/../payloads/status-message.json"
         payload-templated: true
         # payload: |
         #   channel: ${{ inputs.channel-id }}
