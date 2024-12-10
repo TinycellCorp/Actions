@@ -32,10 +32,10 @@ runs:
         payload: |
           channel: ${{ inputs.channel-id }}
           ts: "${{ inputs.ts }}"
+          text: "${{ inputs.title }}"
           attachments:
-            - pretext: "${{ inputs.title }}",
-              color: "${{ inputs.color }}",
+            - color: "${{ inputs.color }}"
               fields:
-                - title: "Status",
-                  short: true,
+                - title: "Status"
+                  short: true
                   value: "${{ inputs.message }}"
