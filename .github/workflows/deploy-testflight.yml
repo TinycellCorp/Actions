@@ -1,4 +1,5 @@
 name: Deploy testflight
+
 on:
   workflow_call:
     inputs:
@@ -17,19 +18,40 @@ on:
       app-store-connect-app-info-apple-id:
         type: string
         required: true
-      
+      slack-channel-id:
+        type: string
+        required: false
+
+env:
+  SLACK_CHANNEL_ID: ${{ inputs.slack-channel-id || vars.SLACK_BUILD_CHANNEL_ID }}
+  
 jobs:
-  build:
+  deploy:
     runs-on:
       - self-hosted
       - macOS
     steps:
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+        id: slack
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: "Deploy ${{ github.repository }} testflight"
+          color: "#999"
+          message: "Started"
       - uses: actions/checkout@v4
         with:
           submodules: 'true'
       - uses: TinycellCorp/Actions/.github/actions/cache@main
         with:
           platform: iOS
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: "Deploy ${{ github.repository }} testflight"
+          color: "#ffa500"
+          message: "Running unity"
       - uses: siren403/unity-builder@custom
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -48,6 +70,13 @@ jobs:
             src/fastlane
       - name: Copy fastlane files
         run: cp -R Actions/src/fastlane/ build/iOS/iOS
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: "Deploy ${{ github.repository }} testflight"
+          color: "#ffa500"
+          message: "Running fastlane"
       - name: Run deploy lane
         env:
           APP_IDENTIFIER: ${{ inputs.app-identifier }}
@@ -58,3 +87,31 @@ jobs:
           PILOT_APPLE_ID: ${{ inputs.app-store-connect-app-info-apple-id }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
         run: cd build/iOS/iOS && bundle exec fastlane ios deploy_testflight
+  success:
+    runs-on:
+      - self-hosted
+      - macOS
+    needs: [ deploy ]
+    if: success()
+    steps:
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: "Deploy ${{ github.repository }} testflight"
+          color: "#00ff00"
+          message: "Deploy success"
+  failure:
+    runs-on:
+      - self-hosted
+      - macOS
+    needs: [ deploy ]
+    if: failure()
+    steps:
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: "Deploy ${{ github.repository }} testflight"
+          color: "#ff0000"
+          message: "Deploy failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
