@@ -16,6 +16,7 @@ jobs:
       - uses: ./.github/actions/slack/status-message/started
         id: slack-started
         with:
+          errors: true
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.CHANNEL_ID }}
           title: "Simulating slack messages"
@@ -26,6 +27,7 @@ jobs:
           time: "5" # for 60 seconds
       - uses: ./.github/actions/slack/status-message/updated
         with:
+          errors: true
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.CHANNEL_ID }}
           title: "Simulating slack messages"
@@ -37,6 +39,7 @@ jobs:
           time: "5" # for 60 seconds
       - uses: ./.github/actions/slack/status-message/updated
         with:
+          errors: true
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.CHANNEL_ID }}
           title: "Simulating slack messages"

@@ -16,6 +16,10 @@ inputs:
   message:
     type: string
     required: true
+  errors:
+    type: boolean
+    required: false
+    default: false
 
 outputs:
   ts:
@@ -28,6 +32,7 @@ runs:
     - uses: slackapi/slack-github-action@v2.0.0
       id: slack
       with:
+        errors: ${{ inputs.errors }}
         method: chat.postMessage
         token: ${{ inputs.bot-token }}
         payload: |

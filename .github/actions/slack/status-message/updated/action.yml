@@ -20,6 +20,10 @@ inputs:
     type: string
     required: true
     description: "get from slack/status-message/started"
+  errors:
+    type: boolean
+    required: false
+    default: false
 
 runs:
   using: "composite"
@@ -27,6 +31,7 @@ runs:
     - uses: slackapi/slack-github-action@v2.0.0
       id: slack
       with:
+        errors: ${{ inputs.errors }}
         method: chat.update
         token: ${{ inputs.bot-token }}
         payload: |
