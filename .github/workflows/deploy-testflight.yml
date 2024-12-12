@@ -24,10 +24,14 @@ on:
       slack-channel-id:
         type: string
         required: false
+      skip-testflight:
+        type: boolean
+        required: false
+        default: false
 
 env:
   SLACK_CHANNEL_ID: ${{ inputs.slack-channel-id || vars.SLACK_BUILD_CHANNEL_ID }}
-  
+
 jobs:
   deploy:
     runs-on:
@@ -46,7 +50,7 @@ jobs:
           message: "Started"
       - uses: actions/checkout@v4
         with:
-          submodules: 'true'
+          submodules: "true"
       - uses: TinycellCorp/Actions/.github/actions/cache@main
         with:
           platform: iOS
@@ -93,12 +97,13 @@ jobs:
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
           PILOT_APPLE_ID: ${{ inputs.app-store-connect-app-info-apple-id }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ inputs.app-specific-password }}
+          SKIP_TESTFLIGHT: ${{ inputs.skip-testflight }}
         run: cd build/iOS/iOS && bundle exec fastlane ios deploy_testflight
   success:
     runs-on:
       - self-hosted
       - macOS
-    needs: [ deploy ]
+    needs: [deploy]
     if: success()
     steps:
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
@@ -113,7 +118,7 @@ jobs:
     runs-on:
       - self-hosted
       - macOS
-    needs: [ deploy ]
+    needs: [deploy]
     if: failure()
     steps:
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
