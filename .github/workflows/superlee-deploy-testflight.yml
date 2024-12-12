@@ -92,7 +92,7 @@ jobs:
 
           SKIP_TESTFLIGHT: ${{ inputs.skip-testflight }}
         run: cd build/iOS/iOS && bundle exec fastlane ios deploy_testflight
-      - name: Update successed
+      - name: Update success
         if: success()
         uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
@@ -102,7 +102,7 @@ jobs:
           color: "#00ff00"
           message: "Deploy success"
           ts: ${{ steps.slack.outputs.ts }}
-      - name: Update failed
+      - name: Update failure
         if: failure()
         uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
