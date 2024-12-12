@@ -36,7 +36,7 @@ platform :ios do
 
     # apple_id (env.PILOT_APPLE_ID): use app store connect > app > app information > apple id
     if ENV["SKIP_TESTFLIGHT"] == "true"
-      UI.warning("Skipped upload_to_testflight")
+      UI.important("Skipped upload_to_testflight")
     else
       upload_to_testflight(
         skip_waiting_for_build_processing: true
