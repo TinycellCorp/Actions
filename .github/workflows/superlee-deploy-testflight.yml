@@ -92,33 +92,23 @@ jobs:
 
           SKIP_TESTFLIGHT: ${{ inputs.skip-testflight }}
         run: cd build/iOS/iOS && bundle exec fastlane ios deploy_testflight
-  success:
-    runs-on:
-      - self-hosted
-      - macOS
-    needs: [deploy]
-    if: success()
-    steps:
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      - name: Update successed
+        if: success()
+        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
           title: "Deploy ${{ github.repository }} testflight"
           color: "#00ff00"
           message: "Deploy success"
-          ts: ${{ needs.deploy.outputs.ts }}
-  failure:
-    runs-on:
-      - self-hosted
-      - macOS
-    needs: [deploy]
-    if: failure()
-    steps:
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+          ts: ${{ steps.slack.outputs.ts }}
+      - name: Update failed
+        if: failure()
+        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
           title: "Deploy ${{ github.repository }} testflight"
           color: "#ff0000"
           message: "Deploy failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
-          ts: ${{ needs.deploy.outputs.ts }}
+          ts: ${{ steps.slack.outputs.ts }}
