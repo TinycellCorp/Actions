@@ -2,6 +2,9 @@
 
 타이니셀 재사용 워크플로우 저장소.
 
+<!-- START doctoc -->
+<!-- END doctoc -->
+
 ## Workflow
 
 워크플로우 파일은 `.github/workflows/`에 작성하면 된다.
@@ -10,9 +13,20 @@
 
 저장소 페이지의 Actions탭에 가면 main의 워크플로우만 보이기도 하고 관리면에서도 심플해진다.
 
-## self-hosted runners
+**workflow-dispatch**
 
-빌드머신으로 맥미니 한 대를 세팅되어 있음.
+워크플로우를 실행하는 가장 간단한 방법.
+
+```yaml
+on:
+  workflow_dispatch:
+```
+
+on에 workflow_dispatch를 작성해두면 Actions탭에서 수동으로 실행 가능하다.
+
+**self-hosted runners**
+
+빌드머신으로 맥미니 한 대가 세팅되어 있음.
 
 `self-hosted`, `macOS` 두 태그로 특정해서 사용.
 
@@ -70,3 +84,8 @@ jobs:
       skip-testflight: ${{ inputs.skip-testflight }}
     secrets: inherit
 ```
+
+| Inputs | Description | 
+| --- | --- |
+| `slack-channel-id` | `배포 알림을 보낼 타이니셀 슬랙 채널아이디. 봇이 초대되어 있어야 한다.` |
+| `skip-testflight` | `배포 프로세스에서 테스트 플라이트 업로드를 스킵` |
