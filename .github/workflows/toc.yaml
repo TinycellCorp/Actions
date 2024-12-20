@@ -14,3 +14,4 @@ jobs:
         with:
           TOC_TITLE: "# 📖 Table of Contents"
           FOLDING: false
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
