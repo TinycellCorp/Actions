@@ -2,8 +2,16 @@
 
 타이니셀 재사용 워크플로우 저장소.
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+# 📖 Table of Contents
+
+- [Workflow](#workflow)
+- [배포](#%EB%B0%B0%ED%8F%AC)
+  - [Google Play](#google-play)
+  - [App Store (testflight)](#app-store-testflight)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Workflow
 
