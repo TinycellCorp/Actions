@@ -61,6 +61,7 @@ jobs:
           gitPrivateToken: ${{ github.token }}
           targetPlatform: iOS
           skipActivation: true
+          versioning: None
       - name: Checkout fastlane
         uses: actions/checkout@v4
         with:
