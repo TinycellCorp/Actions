@@ -113,3 +113,13 @@ jobs:
           color: "#ff0000"
           message: "Deploy failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
           ts: ${{ steps.slack.outputs.ts }}
+      - name: Update cancelled
+        if: cancelled()
+        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: "Deploy ${{ github.repository }} testflight"
+          color: "#ff0000"
+          message: "Deploy cancelled - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
+          ts: ${{ steps.slack.outputs.ts }}
