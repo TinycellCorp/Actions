@@ -101,7 +101,7 @@ jobs:
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
           title: "Deploy ${{ github.repository }} testflight"
           color: "#00ff00"
-          message: "Deploy success"
+          message: "Success"
           ts: ${{ steps.slack.outputs.ts }}
       - name: Update failure
         if: failure()
@@ -111,7 +111,7 @@ jobs:
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
           title: "Deploy ${{ github.repository }} testflight"
           color: "#ff0000"
-          message: "Deploy failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
+          message: "Failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
           ts: ${{ steps.slack.outputs.ts }}
       - name: Update cancelled
         if: cancelled()
@@ -121,5 +121,5 @@ jobs:
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
           title: "Deploy ${{ github.repository }} testflight"
           color: "#ff0000"
-          message: "Deploy cancelled - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
+          message: "Cancelled - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
           ts: ${{ steps.slack.outputs.ts }}
