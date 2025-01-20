@@ -83,6 +83,8 @@ jobs:
         env:
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
 
+          FL_XCODE_VERSION: ${{ vars.XCODE_VERSION_SUPERLEE }}
+
           APP_IDENTIFIER: ${{ inputs.app-identifier }}
           PILOT_APPLE_ID: ${{ inputs.app-info-apple-id }}
 
