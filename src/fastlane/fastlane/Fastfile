@@ -26,8 +26,7 @@ platform :ios do
 
   lane :deploy_testflight do
 
-    # move to ENV
-    # xcodes(version: "15.3")
+    xcodes
 
     # increment_build_number({
     #   build_number: latest_testflight_build_number + 1
