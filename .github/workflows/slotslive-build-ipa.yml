@@ -1,0 +1,178 @@
+name: Build ipa (slotslive)
+
+on:
+  workflow_call:
+    inputs:
+      app-name:
+        type: string
+        required: false
+        default: "SlotsLive"
+      notify-channel-id:
+        type: string
+        required: false
+      upload-channel-id:
+        type: string
+        required: true
+      rlone-config-name:
+        type: string
+        required: true
+      skip-upload-asset-bundles:
+        type: boolean
+        required: false
+        default: false
+      xcode-export-app-url:
+        type: string
+        required: true
+      xcode-export-display-image-url:
+        type: string
+        required: true
+      xcode-export-full-size-image-url:
+        type: string
+        required: true
+      ota-plist-url:
+        type: string
+        required: true
+env:
+  SLACK_CHANNEL_ID: ${{ inputs.notify-channel-id || vars.SLACK_BUILD_CHANNEL_ID }}
+  PLATFORM: iOS
+  ARTIFACT_EXTENSION: ipa
+
+jobs:
+  build:
+    runs-on:
+      - self-hosted
+      - macOS
+    outputs:
+      ts: ${{ steps.slack.outputs.ts }}
+    steps:
+      - name: Export slack title
+        run: echo "SLACK_TITLE=*${{ github.repository }}* Deploy ipa" >> "$GITHUB_ENV"
+
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+        id: slack
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: ${{ env.SLACK_TITLE }}
+          color: "#999"
+          message: "Started"
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: TinycellCorp/Actions/.github/actions/cache@main
+        with:
+          platform: ${{ env.PLATFORM }}
+
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: ${{ env.SLACK_TITLE }}
+          color: "#ffa500"
+          message: "Running unity"
+          ts: ${{ steps.slack.outputs.ts }}
+      - uses: siren403/unity-builder@custom
+        id: unity
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          gitPrivateToken: ${{ github.token }}
+          targetPlatform: ${{ env.PLATFORM }}
+          skipActivation: true
+
+      - name: Export artifact info
+        run: |
+          artifact_name="${{ inputs.app-name }}-${{ steps.unity.outputs.buildVersion }}"
+          xcode_dir="build/iOS/iOS"
+          artifact_path="$xcode_dir/build/$artifact_name.${{ env.ARTIFACT_EXTENSION }}"
+
+          echo "ARTIFACT_NAME=$artifact_name" >> "$GITHUB_ENV"
+          echo "XCODE_DIR=$xcode_dir" >> "$GITHUB_ENV"
+          echo "ARTIFACT_PATH=$artifact_path" >> "$GITHUB_ENV"
+
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: ${{ env.SLACK_TITLE }}
+          color: "#ffa500"
+          message: "Running fastlane"
+          ts: ${{ steps.slack.outputs.ts }}
+
+      - name: run xcode build script
+        env:
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          XCODE_EXPORT_APP_URL: ${{ inputs.xcode-export-app-url }}
+          XCODE_EXPORT_DISPLAY_IMAGE_URL: ${{ inputs.xcode-export-display-image-url }}
+          XCODE_EXPORT_FULL_SIZE_IMAGE_URL: ${{ inputs.xcode-export-full-size-image-url }}
+          OTA_PLIST_URL: ${{ inputs.ota-plist-url }}
+        run: Xcode/init.sh "$XCODE_DIR" "run.sh"
+
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        if: ${{ inputs.skip-upload-asset-bundles == 'false' }}
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: ${{ env.SLACK_TITLE }}
+          color: "#ffa500"
+          message: "Uploading asset bundles"
+          ts: ${{ steps.slack.outputs.ts }}
+
+      - name: Upload asset bundles
+        if: ${{ inputs.skip-upload-asset-bundles == 'false' }}
+        run: "rclone copyto ./ServerData ${{ inputs.rlone-config-name }}:ServerData -P"
+
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: ${{ env.SLACK_TITLE }}
+          color: "#ffa500"
+          message: "Uploading artifact"
+          ts: ${{ steps.slack.outputs.ts }}
+
+      - name: Rename apk
+        run: mv "$XCODE_DIR/build/SlotsLive.ipa" "$ARTIFACT_PATH"
+      - name: Apk upload to slack
+        uses: MeilCli/slack-upload-file@v4
+        with:
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel_id: ${{ inputs.upload-channel-id }}
+          file_path: ${{ env.ARTIFACT_PATH }}
+          file_type: ${{ env.ARTIFACT_EXTENSION }}
+          initial_comment: "${{ env.ARTIFACT_NAME }} Build"
+
+      - name: Update success
+        if: success()
+        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: ${{ env.SLACK_TITLE }}
+          color: "#00ff00"
+          message: "Success"
+          ts: ${{ steps.slack.outputs.ts }}
+      - name: Update failure
+        if: failure()
+        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: ${{ env.SLACK_TITLE }}
+          color: "#ff0000"
+          message: "Failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
+          ts: ${{ steps.slack.outputs.ts }}
+      - name: Update cancelled
+        if: cancelled()
+        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: ${{ env.SLACK_TITLE }}
+          color: "#ff0000"
+          message: "Cancelled - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
+          ts: ${{ steps.slack.outputs.ts }}
