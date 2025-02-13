@@ -23,7 +23,7 @@ on:
 
 env:
   SLACK_CHANNEL_ID: ${{ inputs.notify-channel-id || vars.SLACK_BUILD_CHANNEL_ID }}
-  PLATFORM: iOS
+  PLATFORM: Android
   ARTIFACT_EXTENSION: apk
 
 jobs:
