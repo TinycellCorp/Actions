@@ -16,6 +16,10 @@ on:
       rlone-config-name:
         type: string
         required: true
+      skip-upload-asset-bundles:
+        type: boolean
+        required: false
+        default: false
 
 env:
   SLACK_CHANNEL_ID: ${{ inputs.notify-channel-id || vars.SLACK_BUILD_CHANNEL_ID }}
@@ -73,6 +77,7 @@ jobs:
         run: echo "ARTIFACT_NAME=${{ inputs.app-name }}-${{ steps.unity.outputs.buildVersion }}" >> "$GITHUB_ENV"
 
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        if: ${{ inputs.skip-upload-asset-bundles }} == 'false'
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
@@ -82,7 +87,7 @@ jobs:
           ts: ${{ steps.slack.outputs.ts }}
 
       - name: Upload asset bundles
-        if: ${{ inputs.skip-upload }} == 'false'
+        if: ${{ inputs.skip-upload-asset-bundles }} == 'false'
         run: "rclone copyto ./ServerData ${{ inputs.rlone-config-name }}:ServerData -P"
 
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
