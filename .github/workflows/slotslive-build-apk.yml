@@ -101,7 +101,7 @@ jobs:
         with:
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel_id: ${{ inputs.upload-channel-id }}
-          file_path: ${{ env.ARTIFACT_NAME }}.apk
+          file_path: build/Android/${{ env.ARTIFACT_NAME }}.apk
           file_type: "apk"
           initial_comment: "${{ env.ARTIFACT_NAME }} Build"
 
