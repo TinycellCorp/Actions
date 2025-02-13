@@ -13,18 +13,6 @@ on:
       upload-channel-id:
         type: string
         required: true
-      keystore-base64:
-        type: string
-        required: true
-      keystore-pass:
-        type: string
-        required: true
-      keyalias-name:
-        type: string
-        required: true
-      keyalias-pass:
-        type: string
-        required: true
       rlone-config-name:
         type: string
         required: true
