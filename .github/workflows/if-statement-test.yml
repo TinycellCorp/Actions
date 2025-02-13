@@ -1,0 +1,21 @@
+name: if statement test
+
+on:
+  workflow_dispatch:
+    inputs:
+      is:
+        type: boolean
+        required: true
+        default: false
+      
+jobs:
+  run:
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - if: inputs.is == 'true'
+        run: echo "inputs.is == 'true'"
+      - if: inputs.is == true
+        run: echo "inputs.is == true"
+      - if: ${{ inputs.is == 'true' }}
+        run: echo "{{ inputs.is == 'true' }}"
