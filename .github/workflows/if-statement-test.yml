@@ -13,9 +13,15 @@ jobs:
     runs-on:
       - ubuntu-latest
     steps:
-      - if: inputs.is == 'true'
+      - name: fail
+        if: inputs.is == 'true'
         run: echo "inputs.is == 'true'"
       - if: inputs.is == true
         run: echo "inputs.is == true"
-      - if: ${{ inputs.is == 'true' }}
+      - name: fail
+        if: ${{ inputs.is == 'true' }}
         run: echo "{{ inputs.is == 'true' }}"
+      - if: ${{ inputs.is == true }}
+        run: echo "{{ inputs.is == true }}"
+      - if: ${{ inputs.is != false }}
+        run: echo "{{ inputs.is != false }}"
