@@ -135,16 +135,16 @@ jobs:
           message: "Uploading artifact"
           ts: ${{ steps.slack.outputs.ts }}
 
-      - name: Rename apk
+      - name: Rename artifact
         run: mv "$XCODE_DIR/build/SlotsLive.ipa" "$ARTIFACT_PATH"
-      - name: Apk upload to slack
+      - name: Artifact upload to slack
         uses: MeilCli/slack-upload-file@v4
         with:
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel_id: ${{ inputs.upload-channel-id }}
           file_path: ${{ env.ARTIFACT_PATH }}
           file_type: ${{ env.ARTIFACT_EXTENSION }}
-          initial_comment: "${{ env.ARTIFACT_NAME }} Build"
+          initial_comment: "${{ env.ARTIFACT_NAME }}"
 
       - name: Update success
         if: success()

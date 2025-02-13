@@ -23,6 +23,8 @@ on:
 
 env:
   SLACK_CHANNEL_ID: ${{ inputs.notify-channel-id || vars.SLACK_BUILD_CHANNEL_ID }}
+  PLATFORM: iOS
+  ARTIFACT_EXTENSION: apk
 
 jobs:
   build:
@@ -49,7 +51,8 @@ jobs:
           submodules: "true"
       - uses: TinycellCorp/Actions/.github/actions/cache@main
         with:
-          platform: Android
+          platform: ${{ env.PLATFORM }}
+
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -66,18 +69,24 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           gitPrivateToken: ${{ github.token }}
-          targetPlatform: Android
+          targetPlatform: ${{ env.PLATFORM }}
           androidKeystoreName: user.keystore
           androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64_TINYCELL_SLOTSLIVE }}
           androidKeystorePass: ${{ secrets.KEYSTORE_PASS_TINYCELL_SLOTSLIVE }}
           androidKeyaliasName: ${{ secrets.KEYSTORE_ALIAS_TINYCELL_SLOTSLIVE }}
           androidKeyaliasPass: ${{ secrets.KEYSTORE_ALIAS_PASS_TINYCELL_SLOTSLIVE }}
           skipActivation: true
-      - name: Export artifact name
-        run: echo "ARTIFACT_NAME=${{ inputs.app-name }}-${{ steps.unity.outputs.buildVersion }}" >> "$GITHUB_ENV"
+
+      - name: Export artifact info
+        run: |
+          artifact_name="${{ inputs.app-name }}-${{ steps.unity.outputs.buildVersion }}"
+          artifact_path="build/Android/$artifact_name.${{ env.ARTIFACT_EXTENSION }}"
+
+          echo "ARTIFACT_NAME=$artifact_name" >> "$GITHUB_ENV"
+          echo "ARTIFACT_PATH=$artifact_path" >> "$GITHUB_ENV"
 
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
-        if: ${{ inputs.skip-upload-asset-bundles }} == 'false'
+        if: ${{ inputs.skip-upload-asset-bundles == 'false' }}
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
@@ -87,7 +96,7 @@ jobs:
           ts: ${{ steps.slack.outputs.ts }}
 
       - name: Upload asset bundles
-        if: ${{ inputs.skip-upload-asset-bundles }} == 'false'
+        if: ${{ inputs.skip-upload-asset-bundles == 'false' }}
         run: "rclone copyto ./ServerData ${{ inputs.rlone-config-name }}:ServerData -P"
 
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
@@ -99,16 +108,16 @@ jobs:
           message: "Uploading artifact"
           ts: ${{ steps.slack.outputs.ts }}
 
-      - name: Rename apk
-        run: mv build/Android/Android.apk "build/Android/$ARTIFACT_NAME.apk"
-      - name: Apk upload to slack
+      - name: Rename artifact
+        run: mv build/Android/Android.apk "$ARTIFACT_PATH"
+      - name: Artifact upload to slack
         uses: MeilCli/slack-upload-file@v4
         with:
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel_id: ${{ inputs.upload-channel-id }}
-          file_path: build/Android/${{ env.ARTIFACT_NAME }}.apk
-          file_type: "apk"
-          initial_comment: "${{ env.ARTIFACT_NAME }} Build"
+          file_path: ${{ env.ARTIFACT_PATH }}
+          file_type: ${{ env.ARTIFACT_EXTENSION }}
+          initial_comment: "${{ env.ARTIFACT_NAME }}"
 
       - name: Update success
         if: success()
