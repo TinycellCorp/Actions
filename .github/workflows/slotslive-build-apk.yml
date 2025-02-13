@@ -76,10 +76,10 @@ jobs:
           gitPrivateToken: ${{ github.token }}
           targetPlatform: Android
           androidKeystoreName: user.keystore
-          androidKeystoreBase64: ${{ inputs.keystore-base64 }}
-          androidKeystorePass: ${{ inputs.keystore-pass }}
-          androidKeyaliasName: ${{ inputs.keyalias-name }}
-          androidKeyaliasPass: ${{ inputs.keyalias-pass }}
+          androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64_TINYCELL_SLOTSLIVE }}
+          androidKeystorePass: ${{ secrets.KEYSTORE_PASS_TINYCELL_SLOTSLIVE }}
+          androidKeyaliasName: ${{ secrets.KEYSTORE_ALIAS_TINYCELL_SLOTSLIVE }}
+          androidKeyaliasPass: ${{ secrets.KEYSTORE_ALIAS_PASS_TINYCELL_SLOTSLIVE }}
           skipActivation: true
       - name: Export artifact name
         run: echo "ARTIFACT_NAME=${{ inputs.app-name }}-${{ steps.unity.outputs.buildVersion }}" >> "$GITHUB_ENV"
