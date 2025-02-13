@@ -113,7 +113,7 @@ jobs:
         run: Xcode/init.sh "$XCODE_DIR" "run.sh"
 
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
-        if: ${{ inputs.skip-upload-asset-bundles == 'false' }}
+        if: ${{ !inputs.skip-upload-asset-bundles }}
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
@@ -123,7 +123,7 @@ jobs:
           ts: ${{ steps.slack.outputs.ts }}
 
       - name: Upload asset bundles
-        if: ${{ inputs.skip-upload-asset-bundles == 'false' }}
+        if: ${{ !inputs.skip-upload-asset-bundles }}
         run: "rclone copyto ./ServerData ${{ inputs.rlone-config-name }}:ServerData -P"
 
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
