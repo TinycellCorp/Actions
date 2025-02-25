@@ -113,37 +113,24 @@ jobs:
         run: Xcode/init.sh "$XCODE_DIR" "run.sh"
 
       - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
-        if: ${{ !inputs.skip-upload-asset-bundles }}
         with:
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
           title: ${{ env.SLACK_TITLE }}
           color: "#ffa500"
-          message: "Uploading asset bundles"
+          message: "Uploading artifacts"
           ts: ${{ steps.slack.outputs.ts }}
-
-      - name: Upload asset bundles
-        if: ${{ !inputs.skip-upload-asset-bundles }}
-        run: "rclone copyto ./ServerData ${{ inputs.rlone-config-name }}:ServerData -P"
-
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
-        with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: ${{ env.SLACK_TITLE }}
-          color: "#ffa500"
-          message: "Uploading artifact"
-          ts: ${{ steps.slack.outputs.ts }}
-
       - name: Rename artifact
         run: mv "$XCODE_DIR/build/SlotsLive.ipa" "$ARTIFACT_PATH"
+      - name: Artifacts to zip
+        run: zip -r ${{ env.ARTIFACT_NAME }}.zip ./ServerData ${{ env.ARTIFACT_PATH }}
       - name: Artifact upload to slack
         uses: MeilCli/slack-upload-file@v4
         with:
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel_id: ${{ inputs.upload-channel-id }}
-          file_path: ${{ env.ARTIFACT_PATH }}
-          file_type: ${{ env.ARTIFACT_EXTENSION }}
+          file_path: ${{ env.ARTIFACT_NAME }}.zip
+          file_type: zip
           initial_comment: "${{ env.ARTIFACT_NAME }}"
 
       - name: Update success
