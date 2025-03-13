@@ -58,6 +58,11 @@ jobs:
 
 ### App Store (testflight)
 
+> [!WARNING]
+> 프로비저닝 프로파일 관련 파이프라인이 작성되어 않아 첫 빌드 시 문제가 발생할 수 있음.  
+> `error: exportArchive No profiles for 'com.company.app' were found`  
+> 이 에러가 나오면 Xcode로 배포.
+
 `<apple-account>-deploy-testflight`
 
 > [See workflow](https://github.com/TinycellCorp/Actions/blob/main/.github/workflows/superlee-deploy-testflight.yml)
