@@ -1,0 +1,14 @@
+name: Synology Chat test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - uses: TinycellCorp/Actions/.github/synology-chat/text@main
+        with:
+          webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL_TEST }}
+          text: Sample message

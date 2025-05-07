@@ -1,0 +1,18 @@
+name: Synology Chat message
+description: Send message to Synology Chat
+inputs:
+  webhook-url:
+    type: string
+    required: true
+  text:
+    type: string
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Send message
+      run: |
+        curl -X POST "${{ inputs.webhook-url }}" \
+          -H "Content-Type: application/json" \
+          -d "{\"text\": \"${{ inputs.text }}\"}"
