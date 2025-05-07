@@ -7,22 +7,23 @@ on:
         type: string
         required: false
         default: "SlotsLive"
-      notify-channel-id:
-        type: string
-        required: false
-      upload-channel-id:
-        type: string
-        required: true
-      rlone-config-name:
-        type: string
-        required: true
-      skip-upload-asset-bundles:
-        type: boolean
-        required: false
-        default: false
+      # notify-channel-id:
+      #   type: string
+      #   required: false
+      # upload-channel-id:
+      #   type: string
+      #   required: true
+      # rlone-config-name:
+      #   type: string
+      #   required: true
+      # skip-upload-asset-bundles:
+      #   type: boolean
+      #   required: false
+      #   default: false
 
 env:
-  SLACK_CHANNEL_ID: ${{ inputs.notify-channel-id || vars.SLACK_BUILD_CHANNEL_ID }}
+  # SLACK_CHANNEL_ID: ${{ inputs.notify-channel-id || vars.SLACK_BUILD_CHANNEL_ID }}
+  WEBHOOK_URL: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
   PLATFORM: Android
   ARTIFACT_EXTENSION: apk
 
@@ -31,20 +32,27 @@ jobs:
     runs-on:
       - self-hosted
       - macOS
-    outputs:
-      ts: ${{ steps.slack.outputs.ts }}
+    # outputs:
+      # ts: ${{ steps.slack.outputs.ts }}
     steps:
       - name: Export slack title
         run: echo "SLACK_TITLE=*${{ github.repository }}* Deploy apk" >> "$GITHUB_ENV"
 
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
-        id: slack
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: ${{ env.SLACK_TITLE }}
-          color: "#999"
-          message: "Started"
+          webhook-url: ${{ env.WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }}
+            Started
+
+      # - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
+      #   id: slack
+      #   with:
+      #     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     channel-id: ${{ env.SLACK_CHANNEL_ID }}
+      #     title: ${{ env.SLACK_TITLE }}
+      #     color: "#999"
+      #     message: "Started"
 
       - uses: actions/checkout@v4
         with:
@@ -53,14 +61,21 @@ jobs:
         with:
           platform: ${{ env.PLATFORM }}
 
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: ${{ env.SLACK_TITLE }}
-          color: "#ffa500"
-          message: "Running unity"
-          ts: ${{ steps.slack.outputs.ts }}
+          webhook-url: ${{ env.WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }}
+            Running unity
+
+      # - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      #   with:
+      #     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     channel-id: ${{ env.SLACK_CHANNEL_ID }}
+      #     title: ${{ env.SLACK_TITLE }}
+      #     color: "#ffa500"
+      #     message: "Running unity"
+      #     ts: ${{ steps.slack.outputs.ts }}
       - uses: siren403/unity-builder@custom
         id: unity
         env:
@@ -85,54 +100,83 @@ jobs:
           echo "ARTIFACT_NAME=$artifact_name" >> "$GITHUB_ENV"
           echo "ARTIFACT_PATH=$artifact_path" >> "$GITHUB_ENV"
 
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: ${{ env.SLACK_TITLE }}
-          color: "#ffa500"
-          message: "Uploading artifacts"
-          ts: ${{ steps.slack.outputs.ts }}
-      - name: Rename artifact
-        run: mv build/Android/Android.apk "$ARTIFACT_PATH"
-      - name: Artifacts to zip
-        run: zip -r ${{ env.ARTIFACT_NAME }}.zip ./ServerData ${{ env.ARTIFACT_PATH }}
-      - name: Artifact upload to slack
-        uses: MeilCli/slack-upload-file@v4
-        with:
-          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel_id: ${{ inputs.upload-channel-id }}
-          file_path: ${{ env.ARTIFACT_NAME }}.zip
-          file_type: zip
-          initial_comment: "${{ env.ARTIFACT_NAME }}"
+          webhook-url: ${{ env.WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }}
+            Uploading artifacts
 
-      - name: Update success
+      # - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      #   with:
+      #     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     channel-id: ${{ env.SLACK_CHANNEL_ID }}
+      #     title: ${{ env.SLACK_TITLE }}
+      #     color: "#ffa500"
+      #     message: "Uploading artifacts"
+      #     ts: ${{ steps.slack.outputs.ts }}
+      # - name: Rename artifact
+      #   run: mv build/Android/Android.apk "$ARTIFACT_PATH"
+      # - name: Artifacts to zip
+      #   run: zip -r ${{ env.ARTIFACT_NAME }}.zip ./ServerData ${{ env.ARTIFACT_PATH }}
+      # - name: Artifact upload to slack
+      #   uses: MeilCli/slack-upload-file@v4
+      #   with:
+      #     slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     channel_id: ${{ inputs.upload-channel-id }}
+      #     file_path: ${{ env.ARTIFACT_NAME }}.zip
+      #     file_type: zip
+      #     initial_comment: "${{ env.ARTIFACT_NAME }}"
+
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: success()
-        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: ${{ env.SLACK_TITLE }}
-          color: "#00ff00"
-          message: "Success"
-          ts: ${{ steps.slack.outputs.ts }}
-      - name: Update failure
+          webhook-url: ${{ env.WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }}
+            Success
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: failure()
-        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: ${{ env.SLACK_TITLE }}
-          color: "#ff0000"
-          message: "Failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
-          ts: ${{ steps.slack.outputs.ts }}
-      - name: Update cancelled
+          webhook-url: ${{ env.WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }}
+            Failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: cancelled()
-        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: ${{ env.SLACK_TITLE }}
-          color: "#ff0000"
-          message: "Cancelled - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
-          ts: ${{ steps.slack.outputs.ts }}
+          webhook-url: ${{ env.WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }}
+            Cancelled - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>
+   
+      # - name: Update success
+      #   if: success()
+      #   uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      #   with:
+      #     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     channel-id: ${{ env.SLACK_CHANNEL_ID }}
+      #     title: ${{ env.SLACK_TITLE }}
+      #     color: "#00ff00"
+      #     message: "Success"
+      #     ts: ${{ steps.slack.outputs.ts }}
+      # - name: Update failure
+      #   if: failure()
+      #   uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      #   with:
+      #     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     channel-id: ${{ env.SLACK_CHANNEL_ID }}
+      #     title: ${{ env.SLACK_TITLE }}
+      #     color: "#ff0000"
+      #     message: "Failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
+      #     ts: ${{ steps.slack.outputs.ts }}
+      # - name: Update cancelled
+      #   if: cancelled()
+      #   uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      #   with:
+      #     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     channel-id: ${{ env.SLACK_CHANNEL_ID }}
+      #     title: ${{ env.SLACK_TITLE }}
+      #     color: "#ff0000"
+      #     message: "Cancelled - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
+      #     ts: ${{ steps.slack.outputs.ts }}
