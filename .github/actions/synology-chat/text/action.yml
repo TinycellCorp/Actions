@@ -14,7 +14,7 @@ runs:
     - name: Send message
       shell: bash
       run: |
-        sleep 0.3s
+        sleep 0.5s
         curl -X POST "${{ inputs.webhook-url }}" \
           -H "Content-Type: application/json" \
           -d "payload={\"text\": \"${{ inputs.text }}\"}"
