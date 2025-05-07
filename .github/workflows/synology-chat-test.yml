@@ -8,7 +8,7 @@ jobs:
     runs-on:
       - ubuntu-latest
     steps:
-      - uses: TinycellCorp/Actions/.github/synology-chat/text@main
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
           webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL_TEST }}
           text: Sample message
