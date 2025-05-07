@@ -76,21 +76,23 @@ jobs:
       #     color: "#ffa500"
       #     message: "Running unity"
       #     ts: ${{ steps.slack.outputs.ts }}
-      - uses: siren403/unity-builder@custom
-        id: unity
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          gitPrivateToken: ${{ github.token }}
-          targetPlatform: ${{ env.PLATFORM }}
-          androidKeystoreName: user.keystore
-          androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64_TINYCELL_SLOTSLIVE }}
-          androidKeystorePass: ${{ secrets.KEYSTORE_PASS_TINYCELL_SLOTSLIVE }}
-          androidKeyaliasName: ${{ secrets.KEYSTORE_ALIAS_TINYCELL_SLOTSLIVE }}
-          androidKeyaliasPass: ${{ secrets.KEYSTORE_ALIAS_PASS_TINYCELL_SLOTSLIVE }}
-          skipActivation: true
+
+      # Skip
+      # - uses: siren403/unity-builder@custom
+      #   id: unity
+      #   env:
+      #     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      #     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      #   with:
+      #     gitPrivateToken: ${{ github.token }}
+      #     targetPlatform: ${{ env.PLATFORM }}
+      #     androidKeystoreName: user.keystore
+      #     androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64_TINYCELL_SLOTSLIVE }}
+      #     androidKeystorePass: ${{ secrets.KEYSTORE_PASS_TINYCELL_SLOTSLIVE }}
+      #     androidKeyaliasName: ${{ secrets.KEYSTORE_ALIAS_TINYCELL_SLOTSLIVE }}
+      #     androidKeyaliasPass: ${{ secrets.KEYSTORE_ALIAS_PASS_TINYCELL_SLOTSLIVE }}
+      #     skipActivation: true
 
       - name: Export artifact info
         run: |
@@ -107,6 +109,7 @@ jobs:
             ${{ env.SLACK_TITLE }}
             Uploading artifacts
 
+      # TODO: Drive upload to add url
       # - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
       #   with:
       #     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
