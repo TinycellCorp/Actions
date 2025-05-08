@@ -46,7 +46,7 @@ runs:
         NAS_PATH: ${{ inputs.path }}
         EXPIRE: ${{ inputs.expire }}
       run: |
-        date_expired=$(date ${EXPIRE} "+%Y-%m-%d %H:%M:%S")
+        date_expired="\"$(date ${EXPIRE} "+%Y-%m-%d %H:%M:%S")\""
 
         resp=$(curl -G "${HOST_URL}/webapi/entry.cgi" \
           --data-urlencode "_sid=${SID}" \
@@ -56,13 +56,13 @@ runs:
           --data-urlencode "path=${NAS_PATH}" \
           --data-urlencode "date_expired=${date_expired}")
 
-        echo "${resp}" | jq -r "."
+        echo "${resp}" | jq "."
 
-        id=$(echo "${resp}" | jq -r ".data.links[0] | {id: .id}")
-        url=$(echo "${resp}" | jq -r ".data.links[0] | {url: .url}")
-        nas_path=$(echo "${resp}" | jq -r ".data.links[0] | {path: .path}")
-        link_status=$(echo "${resp}" | jq -r ".data.links[0] | {status: .status}")
-        date_expired=$(echo "${resp}" | jq -r ".data.links[0] | {date_expired: .date_expired}")
+        id=$(echo "${resp}" | jq ".data.links[0].id")
+        url=$(echo "${resp}" | jq ".data.links[0].url")
+        nas_path=$(echo "${resp}" | jq ".data.links[0].path")
+        link_status=$(echo "${resp}" | jq ".data.links[0].status")
+        date_expired=$(echo "${resp}" | jq ".data.links[0].date_expired")
 
         echo "id: ${id}"
         echo "url: ${url}"
