@@ -22,13 +22,13 @@ jobs:
       - macOS
     steps:
       - name: Export slack title
-        run: echo "SLACK_TITLE=*${{ github.repository }}* Deploy apk" >> "$GITHUB_ENV"
+        run: echo "MESSAGE_TITLE=*${{ github.repository }}* Deploy apk" >> "$GITHUB_ENV"
 
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
           webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
           text: |
-            ${{ env.SLACK_TITLE }} :Started
+            ${{ env.MESSAGE_TITLE }} :Started
 
       - uses: actions/checkout@v4
         with:
@@ -41,7 +41,7 @@ jobs:
         with:
           webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
           text: |
-            ${{ env.SLACK_TITLE }} :Unity
+            ${{ env.MESSAGE_TITLE }} :Unity
 
       - uses: siren403/unity-builder@custom
         id: unity
@@ -71,7 +71,7 @@ jobs:
         with:
           webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
           text: |
-            ${{ env.SLACK_TITLE }} :Uploading artifacts
+            ${{ env.MESSAGE_TITLE }} :Uploading artifacts
 
       - name: Rename artifact
         run: mv build/Android/Android.apk "$ARTIFACT_PATH"
@@ -107,19 +107,19 @@ jobs:
         with:
           webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
           text: |
-            ${{ env.SLACK_TITLE }} :Success
+            ${{ env.MESSAGE_TITLE }} :Success
             <${{ steps.share.outputs.url }}|${{ env.ARTIFACTS_NAME }}> (${{ steps.share.outputs.date_expired }})
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: failure()
         with:
           webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
           text: |
-            ${{ env.SLACK_TITLE }} :Failure
+            ${{ env.MESSAGE_TITLE }} :Failure
             <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: cancelled()
         with:
           webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
           text: |
-            ${{ env.SLACK_TITLE }} :Cancelled
+            ${{ env.MESSAGE_TITLE }} :Cancelled
             <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>
