@@ -31,7 +31,7 @@ runs:
         FORMAT: sid
         SESSION: dsm_info
       run: |
-        resp=$(curl -G "${HOST_URL}" \
+        resp=$(curl -G "${HOST_URL}/webapi/auth.cgi" \
           --data-urlencode "api=${API}" \
           --data-urlencode "method=${METHOD}" \
           --data-urlencode "version=${VERSION}" \

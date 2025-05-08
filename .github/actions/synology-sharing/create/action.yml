@@ -47,7 +47,8 @@ runs:
         EXPIRE: ${{ inputs.expire }}
       run: |
         date_expired=$(date ${EXPIRE} "+%Y-%m-%d %H:%M:%S")
-        resp=$(curl -G "${HOST_URL}" \
+
+        resp=$(curl -G "${HOST_URL}/webapi/entry.cgi" \
           --data-urlencode "_sid=${SID}" \
           --data-urlencode "api=${API}" \
           --data-urlencode "method=${METHOD}" \
