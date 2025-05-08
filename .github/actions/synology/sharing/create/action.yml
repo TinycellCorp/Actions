@@ -56,13 +56,13 @@ runs:
           --data-urlencode "path=${NAS_PATH}" \
           --data-urlencode "date_expired=${date_expired}")
 
-        echo "${resp}" | jq "."
+        echo "${resp}" | jq -r "."
 
-        id=$(echo "${resp}" | jq ".data.links[0] | {id: .id}")
-        url=$(echo "${resp}" | jq ".data.links[0] | {url: .url}")
-        nas_path=$(echo "${resp}" | jq ".data.links[0] | {path: .path}")
-        link_status=$(echo "${resp}" | jq ".data.links[0] | {status: .status}")
-        date_expired=$(echo "${resp}" | jq ".data.links[0] | {date_expired: .date_expired}")
+        id=$(echo "${resp}" | jq -r ".data.links[0] | {id: .id}")
+        url=$(echo "${resp}" | jq -r ".data.links[0] | {url: .url}")
+        nas_path=$(echo "${resp}" | jq -r ".data.links[0] | {path: .path}")
+        link_status=$(echo "${resp}" | jq -r ".data.links[0] | {status: .status}")
+        date_expired=$(echo "${resp}" | jq -r ".data.links[0] | {date_expired: .date_expired}")
 
         echo "id: ${id}"
         echo "url: ${url}"
