@@ -90,10 +90,10 @@ jobs:
         run: mv build/Android/Android.apk "$ARTIFACT_PATH"
       - name: Artifacts to zip
         run: zip -r ${{ env.ARTIFACT_NAME }}.zip ./ServerData ${{ env.ARTIFACT_PATH }}
-      - name: Artifact upload to nas
+      - name: Artifacts upload to nas
         run: |
-          artifact=${{ env.ARTIFACT_NAME }}.zip
-          rclone copyto ${artifact} ${{ inputs.rclone-remote }}/${artifact} -P
+          artifacts=${{ env.ARTIFACT_NAME }}.zip
+          rclone copyto ${artifacts} ${{ inputs.rclone-remote }}/${artifacts} -P
 
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: success()
