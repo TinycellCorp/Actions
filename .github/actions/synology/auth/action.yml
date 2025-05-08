@@ -1,0 +1,45 @@
+name: api auth
+description: Synology NAS auth
+inputs:
+  host:
+    description: nas url
+    required: true
+  account:
+    description: account name
+    required: true
+  passwd:
+    description: account password
+    required: true
+
+outputs:
+  sid:
+    description: session id
+    value: ${{ steps.auth.outputs.sid }}
+
+runs:
+  using: "composite"
+  steps:
+    - shell: zsh {0}
+      id: auth
+      env:
+        HOST_URL: ${{ inputs.host }}
+        ACCOUNT: ${{ inputs.account }}
+        PASSWD: ${{ inputs.passwd }}
+        API: SYNO.API.Auth
+        METHOD: login
+        VERSION: 3
+        FORMAT: sid
+        SESSION: dsm_info
+      run: |
+        resp=$(curl -G "${HOST_URL}" \
+          --data-urlencode "api=${API}" \
+          --data-urlencode "method=${METHOD}" \
+          --data-urlencode "version=${VERSION}" \
+          --data-urlencode "account=${ACCOUNT}" \
+          --data-urlencode "passwd=${PASSWD}" \
+          --data-urlencode "format=${FORMAT}" \
+          --data-urlencode "session=${SESSION}")
+
+        sid=$(echo "${resp}" | jq -r ".data.sid")
+
+        echo "sid=${sid}" >> $GITHUB_OUTPUT
