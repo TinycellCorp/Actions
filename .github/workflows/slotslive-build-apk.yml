@@ -80,9 +80,13 @@ jobs:
       - name: Artifacts upload to nas
         run: |
           artifacts_name=${{ env.ARTIFACT_NAME }}.zip
-          rclone copyto ${artifacts_name} ${{ inputs.rclone-remote }}/${artifacts_name} -P
-          echo "ARTIFACTS_NAME=$artifacts_name" >> "$GITHUB_ENV"
+          artifacts_remote_path=${{ inputs.rclone-remote }}/${artifacts_name}
           
+          rclone copyto ${artifacts_name} ${artifacts_remote_path} -P
+          echo "ARTIFACTS_NAME=${artifacts_name}" >> "$GITHUB_ENV"
+
+          artifacts_path=${artifacts_remote_path#*:}
+          echo "ARTIFACTS_PATH=${artifacts_path}" >> "$GITHUB_ENV"
       - uses: TinycellCorp/Actions/.github/actions/synology/auth@main
         id: auth
         name: Synology auth
@@ -96,7 +100,7 @@ jobs:
         with:
           host: ${{ vars.SYNOLOGY_HOST }}
           sid: ${{ steps.auth.outputs.sid }}
-          path: /Tinycell/SlotsLive/Artifacts/SlotsLive-0.0.1544.zip
+          path: /${{ env.ARTIFACTS_PATH }}
 
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: success()
