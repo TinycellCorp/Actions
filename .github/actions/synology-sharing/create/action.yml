@@ -1,0 +1,70 @@
+name: Sharing create
+description: File station create share link
+inputs:
+  host:
+    description: nas url
+    required: true
+  sid:
+    description: sid from auth
+    required: true
+  path:
+    description: share file path from nas
+    required: true
+  expire:
+    description: expire date arg
+    default: -v+3H
+    required: false
+
+outputs:
+  id:
+    description: link id
+    value: ${{ steps.create.outputs.id }}
+  url:
+    description: link url
+    value: ${{ steps.create.outputs.url }}
+  path:
+    description: file path
+    value: ${{ steps.create.outputs.path }}
+  status:
+    description: link status
+    value: ${{ steps.create.outputs.status }}
+  date_expired:
+    description: link expired date
+    value: ${{ steps.create.outputs.date_expired }}
+
+runs:
+  using: "composite"
+  steps:
+    - shell: zsh {0}
+      id: create
+      env:
+        HOST_URL: ${{ inputs.host }}
+        SID: ${{ inputs.sid }}
+        API: SYNO.FileStation.Sharing
+        METHOD: "create"
+        VERSION: 3
+        NAS_PATH: ${{ inputs.path }}
+        EXPIRE: ${{ inputs.expire }}
+      run: |
+        date_expired=$(date ${EXPIRE} "+%Y-%m-%d %H:%M:%S")
+        resp=$(curl -G "${HOST_URL}" \
+          --data-urlencode "_sid=${SID}" \
+          --data-urlencode "api=${API}" \
+          --data-urlencode "method=${METHOD}" \
+          --data-urlencode "version=${VERSION}" \
+          --data-urlencode "path=${NAS_PATH}" \
+          --data-urlencode "date_expired=${date_expired}")
+
+        id=$(echo "${HOST_URL}" | jq ".data.links[0] | {id: .id}")
+        url=$(echo "${HOST_URL}" | jq ".data.links[0] | {url: .url}")
+        nas_path=$(echo "${HOST_URL}" | jq ".data.links[0] | {path: .path}")
+        status=$(echo "${HOST_URL}" | jq ".data.links[0] | {status: .status}")
+        date_expired=$(echo "${HOST_URL}" | jq ".data.links[0] | {date_expired: .date_expired}")
+
+        echo "id=${id}" >> $GITHUB_OUTPUT
+        echo "url=${url}" >> $GITHUB_OUTPUT
+        echo "path=${nas_path}" >> $GITHUB_OUTPUT
+        echo "status=${status}" >> $GITHUB_OUTPUT
+        echo "date_expired=${date_expired}" >> $GITHUB_OUTPUT
+
+
