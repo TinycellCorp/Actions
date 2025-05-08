@@ -7,13 +7,13 @@ on:
         type: string
         required: false
         default: "SlotsLive"
-      # rlone-config-name:
-      #   type: string
-      #   required: true
-      # skip-upload-asset-bundles:
-      #   type: boolean
-      #   required: false
-      #   default: false
+      rclone-remote:
+        type: string
+        required: true
+      skip-upload-asset-bundles:
+        type: boolean
+        required: false
+        default: false
 
 env:
   PLATFORM: Android
@@ -47,22 +47,21 @@ jobs:
           text: |
             ${{ env.SLACK_TITLE }} :Unity
 
-      # Skip
-      # - uses: siren403/unity-builder@custom
-      #   id: unity
-      #   env:
-      #     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-      #     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-      #     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-      #   with:
-      #     gitPrivateToken: ${{ github.token }}
-      #     targetPlatform: ${{ env.PLATFORM }}
-      #     androidKeystoreName: user.keystore
-      #     androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64_TINYCELL_SLOTSLIVE }}
-      #     androidKeystorePass: ${{ secrets.KEYSTORE_PASS_TINYCELL_SLOTSLIVE }}
-      #     androidKeyaliasName: ${{ secrets.KEYSTORE_ALIAS_TINYCELL_SLOTSLIVE }}
-      #     androidKeyaliasPass: ${{ secrets.KEYSTORE_ALIAS_PASS_TINYCELL_SLOTSLIVE }}
-      #     skipActivation: true
+      - uses: siren403/unity-builder@custom
+        id: unity
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          gitPrivateToken: ${{ github.token }}
+          targetPlatform: ${{ env.PLATFORM }}
+          androidKeystoreName: user.keystore
+          androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64_TINYCELL_SLOTSLIVE }}
+          androidKeystorePass: ${{ secrets.KEYSTORE_PASS_TINYCELL_SLOTSLIVE }}
+          androidKeyaliasName: ${{ secrets.KEYSTORE_ALIAS_TINYCELL_SLOTSLIVE }}
+          androidKeyaliasPass: ${{ secrets.KEYSTORE_ALIAS_PASS_TINYCELL_SLOTSLIVE }}
+          skipActivation: true
 
       - name: Export artifact info
         run: |
@@ -79,26 +78,22 @@ jobs:
             ${{ env.SLACK_TITLE }} :Uploading artifacts
 
       # TODO: Drive upload to add url
-      # - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
-      #   with:
-      #     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-      #     channel-id: ${{ env.SLACK_CHANNEL_ID }}
-      #     title: ${{ env.SLACK_TITLE }}
-      #     color: "#ffa500"
-      #     message: "Uploading artifacts"
-      #     ts: ${{ steps.slack.outputs.ts }}
-      # - name: Rename artifact
-      #   run: mv build/Android/Android.apk "$ARTIFACT_PATH"
-      # - name: Artifacts to zip
-      #   run: zip -r ${{ env.ARTIFACT_NAME }}.zip ./ServerData ${{ env.ARTIFACT_PATH }}
-      # - name: Artifact upload to slack
-      #   uses: MeilCli/slack-upload-file@v4
-      #   with:
-      #     slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-      #     channel_id: ${{ inputs.upload-channel-id }}
-      #     file_path: ${{ env.ARTIFACT_NAME }}.zip
-      #     file_type: zip
-      #     initial_comment: "${{ env.ARTIFACT_NAME }}"
+      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          title: ${{ env.SLACK_TITLE }}
+          color: "#ffa500"
+          message: "Uploading artifacts"
+          ts: ${{ steps.slack.outputs.ts }}
+      - name: Rename artifact
+        run: mv build/Android/Android.apk "$ARTIFACT_PATH"
+      - name: Artifacts to zip
+        run: zip -r ${{ env.ARTIFACT_NAME }}.zip ./ServerData ${{ env.ARTIFACT_PATH }}
+      - name: Artifact upload to nas
+        run: |
+          artifact=${{ env.ARTIFACT_NAME }}.zip
+          rclone copyto ${artifact} ${{ inputs.rclone-remote }}/${artifact} -P
 
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: success()
