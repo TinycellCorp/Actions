@@ -25,9 +25,9 @@ outputs:
   path:
     description: file path
     value: ${{ steps.create.outputs.path }}
-  status:
+  link_status:
     description: link status
-    value: ${{ steps.create.outputs.status }}
+    value: ${{ steps.create.outputs.link_status }}
   date_expired:
     description: link expired date
     value: ${{ steps.create.outputs.date_expired }}
@@ -59,11 +59,11 @@ runs:
         id=$(echo "${resp}" | jq ".data.links[0] | {id: .id}")
         url=$(echo "${resp}" | jq ".data.links[0] | {url: .url}")
         nas_path=$(echo "${resp}" | jq ".data.links[0] | {path: .path}")
-        status=$(echo "${resp}" | jq ".data.links[0] | {status: .status}")
+        link_status=$(echo "${resp}" | jq ".data.links[0] | {status: .status}")
         date_expired=$(echo "${resp}" | jq ".data.links[0] | {date_expired: .date_expired}")
 
         echo "id=${id}" >> $GITHUB_OUTPUT
         echo "url=${url}" >> $GITHUB_OUTPUT
         echo "path=${nas_path}" >> $GITHUB_OUTPUT
-        echo "status=${status}" >> $GITHUB_OUTPUT
+        echo "link_status=${link_status}" >> $GITHUB_OUTPUT
         echo "date_expired=${date_expired}" >> $GITHUB_OUTPUT

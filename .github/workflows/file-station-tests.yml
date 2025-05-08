@@ -2,7 +2,7 @@ name: Synology file station tests
 
 on:
   workflow_dispatch:
-        
+
 jobs:
   create:
     runs-on:
@@ -15,7 +15,7 @@ jobs:
           host: ${{ vars.SYNOLOGY_HOST }}
           account: ${{ vars.SYNOLOGY_ACCOUNT }}
           passwd: ${{ secrets.SYNOLOGY_PASSWD }}
-      - uses: TinycellCorp/Actions/.github/actions/synology-sharing/create@main
+      - uses: TinycellCorp/Actions/.github/actions/synology/sharing/create@main
         with:
           host: ${{ vars.SYNOLOGY_HOST }}
           sid: ${{ steps.auth.outputs.sid }}
