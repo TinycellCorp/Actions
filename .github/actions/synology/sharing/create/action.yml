@@ -64,6 +64,12 @@ runs:
         link_status=$(echo "${resp}" | jq ".data.links[0] | {status: .status}")
         date_expired=$(echo "${resp}" | jq ".data.links[0] | {date_expired: .date_expired}")
 
+        echo "id: ${id}"
+        echo "url: ${url}"
+        echo "path: ${nas_path}"
+        echo "link_status: ${link_status}"
+        echo "date_expired: ${date_expired}"
+
         echo "id=${id}" >> $GITHUB_OUTPUT
         echo "url=${url}" >> $GITHUB_OUTPUT
         echo "path=${nas_path}" >> $GITHUB_OUTPUT
