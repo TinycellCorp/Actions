@@ -11,47 +11,33 @@ on:
         type: string
         required: true
         description: "App Store Connect > App Information > Apple ID"
-      slack-channel-id:
-        type: string
-        required: false
       skip-testflight:
         type: boolean
         required: false
         default: false
-
-env:
-  SLACK_CHANNEL_ID: ${{ inputs.slack-channel-id || vars.SLACK_BUILD_CHANNEL_ID }}
 
 jobs:
   deploy:
     runs-on:
       - self-hosted
       - macOS
-    outputs:
-      ts: ${{ steps.slack.outputs.ts }}
     steps:
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/started@main
-        id: slack
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: "Deploy ${{ github.repository }} testflight"
-          color: "#999"
-          message: "Started"
+          webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }} Deploy testflight :Started
       - uses: actions/checkout@v4
         with:
           submodules: "true"
       - uses: TinycellCorp/Actions/.github/actions/cache@main
         with:
           platform: iOS
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: "Deploy ${{ github.repository }} testflight"
-          color: "#ffa500"
-          message: "Running unity"
-          ts: ${{ steps.slack.outputs.ts }}
+          webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }} Deploy testflight :Unity
       - uses: siren403/unity-builder@custom
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -71,14 +57,11 @@ jobs:
             src/fastlane
       - name: Copy fastlane files
         run: cp -R Actions/src/fastlane/ build/iOS/iOS
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+      - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: "Deploy ${{ github.repository }} testflight"
-          color: "#ffa500"
-          message: "Running fastlane"
-          ts: ${{ steps.slack.outputs.ts }}
+          webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }} Deploy testflight :fastlane
       - name: Run deploy lane
         env:
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
@@ -97,31 +80,24 @@ jobs:
         run: cd build/iOS/iOS && bundle exec fastlane ios deploy_testflight
       - name: Update success
         if: success()
-        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: "Deploy ${{ github.repository }} testflight"
-          color: "#00ff00"
-          message: "Success"
-          ts: ${{ steps.slack.outputs.ts }}
+          webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }} Deploy testflight :Success
       - name: Update failure
         if: failure()
-        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: "Deploy ${{ github.repository }} testflight"
-          color: "#ff0000"
-          message: "Failure - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
-          ts: ${{ steps.slack.outputs.ts }}
+          webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }} Deploy testflight :Failure
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>
       - name: Update cancelled
         if: cancelled()
-        uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
+        uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: "Deploy ${{ github.repository }} testflight"
-          color: "#ff0000"
-          message: "Cancelled - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>"
-          ts: ${{ steps.slack.outputs.ts }}
+          webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
+          text: |
+            ${{ env.SLACK_TITLE }} Deploy testflight :Cancelled
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Go to runs>
