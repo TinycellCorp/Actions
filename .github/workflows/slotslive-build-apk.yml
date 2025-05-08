@@ -77,23 +77,30 @@ jobs:
           text: |
             ${{ env.SLACK_TITLE }} :Uploading artifacts
 
-      # TODO: Drive upload to add url
-      - uses: TinycellCorp/Actions/.github/actions/slack/status-message/updated@main
-        with:
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          title: ${{ env.SLACK_TITLE }}
-          color: "#ffa500"
-          message: "Uploading artifacts"
-          ts: ${{ steps.slack.outputs.ts }}
       - name: Rename artifact
         run: mv build/Android/Android.apk "$ARTIFACT_PATH"
       - name: Artifacts to zip
         run: zip -r ${{ env.ARTIFACT_NAME }}.zip ./ServerData ${{ env.ARTIFACT_PATH }}
       - name: Artifacts upload to nas
         run: |
-          artifacts=${{ env.ARTIFACT_NAME }}.zip
-          rclone copyto ${artifacts} ${{ inputs.rclone-remote }}/${artifacts} -P
+          artifacts_name=${{ env.ARTIFACT_NAME }}.zip
+          rclone copyto ${artifacts_name} ${{ inputs.rclone-remote }}/${artifacts_name} -P
+          echo "ARTIFACTS_NAME=$artifacts_name" >> "$GITHUB_ENV"
+          
+      - uses: TinycellCorp/Actions/.github/actions/synology/auth@main
+        id: auth
+        name: Synology auth
+        with:
+          host: ${{ vars.SYNOLOGY_HOST }}
+          account: ${{ vars.SYNOLOGY_ACCOUNT }}
+          passwd: ${{ secrets.SYNOLOGY_PASSWD }}
+      - uses: TinycellCorp/Actions/.github/actions/synology/sharing/create@main
+        id: share
+        name: Create share link
+        with:
+          host: ${{ vars.SYNOLOGY_HOST }}
+          sid: ${{ steps.auth.outputs.sid }}
+          path: /Tinycell/SlotsLive/Artifacts/SlotsLive-0.0.1544.zip
 
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: success()
@@ -101,6 +108,7 @@ jobs:
           webhook-url: ${{ secrets.SYNOLOGY_CHAT_WEBHOOK_URL }}
           text: |
             ${{ env.SLACK_TITLE }} :Success
+            <${{ steps.share.outputs.url }}|${{ env.ARTIFACTS_NAME }}> (${{ steps.share.outputs.date_expired }})
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
         if: failure()
         with:
