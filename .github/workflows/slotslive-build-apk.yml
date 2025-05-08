@@ -10,10 +10,6 @@ on:
       rclone-remote:
         type: string
         required: true
-      skip-upload-asset-bundles:
-        type: boolean
-        required: false
-        default: false
 
 env:
   PLATFORM: Android
