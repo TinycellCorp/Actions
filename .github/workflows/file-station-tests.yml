@@ -1,0 +1,28 @@
+name: Synology file station tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      host:
+        type: string
+        description: NAS host url
+        required: true
+        
+jobs:
+  create:
+    runs-on:
+      - self-hosted
+      - macOS
+    steps:
+      - id: auth
+        uses: TinycellCorp/Actions/.github/actions/synology/auth@main
+        with:
+          host: ${{ inputs.host }}
+          account: ${{ secrets.SYNOLOGY_ACCOUNT }}
+          passwd: ${{ secrets.SYNOLOGY_PASSWD }}
+      - uses: TinycellCorp/Actions/.github/actions/synology-sharing/create@main
+        with:
+          host: ${{ inputs.host }}
+          sid: ${{ steps.auth.outputs.sid }}
+          path: /Tinycell/SlotsLive/Artifacts/SlotsLive-0.0.1544.zip
+          expire: -v+10S
