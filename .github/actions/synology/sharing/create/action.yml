@@ -56,6 +56,8 @@ runs:
           --data-urlencode "path=${NAS_PATH}" \
           --data-urlencode "date_expired=${date_expired}")
 
+        echo "${resp}" | jq "."
+
         id=$(echo "${resp}" | jq ".data.links[0] | {id: .id}")
         url=$(echo "${resp}" | jq ".data.links[0] | {url: .url}")
         nas_path=$(echo "${resp}" | jq ".data.links[0] | {path: .path}")
