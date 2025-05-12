@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ runner.name }}
+  group: ${{ github.repository_owner }}
   
 jobs:
   prepare:
