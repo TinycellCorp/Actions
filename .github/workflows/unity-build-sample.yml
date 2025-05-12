@@ -18,7 +18,7 @@ jobs:
           submodules: "true"
       - uses: TinycellCorp/Actions/.github/actions/cache@main
         with:
-          platform: ${{ env.PLATFORM }}
+          platform: Android
   unity:
     needs: prepare
     runs-on:
