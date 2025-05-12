@@ -27,6 +27,7 @@ jobs:
       - uses: TinycellCorp/Actions/.github/actions/cache@main
         with:
           platform: Android
+          path: src/Unity/Library
       - uses: siren403/unity-builder@custom
         id: unity
         env:
