@@ -7,12 +7,17 @@ on:
         type: boolean
         required: true
         default: false
+  workflow_call:
+    inputs:
+      is:
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.repository_owner }}
       
 jobs:
-  run:
+  first:
     runs-on:
       - self-hosted
       - macOS
@@ -25,6 +30,12 @@ jobs:
       - name: fail
         if: ${{ inputs.is == 'true' }}
         run: echo "{{ inputs.is == 'true' }}"
+  second:
+    needs: first
+    runs-on:
+      - self-hosted
+      - macOS
+    steps:
       - if: ${{ inputs.is == true }}
         run: echo "{{ inputs.is == true }}"
       - if: ${{ inputs.is != false }}
