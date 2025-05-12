@@ -2,6 +2,7 @@ name: Unity build sample
 
 on:
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: ${{ github.repository_owner }}
@@ -41,8 +42,11 @@ jobs:
       version: steps.unity.outputs.buildVersion
   result:
     needs: unity
+    name: Result
     runs-on:
       - self-hosted
       - macOS
+    env:
+      VERSION: ${{ needs.unity.outputs.version }}
     steps:
-      - run: echo ${{ needs.unity.outputs.version }}
+      - run: echo ${{ env.VERSION }}
