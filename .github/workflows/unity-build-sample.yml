@@ -3,6 +3,9 @@ name: Unity build sample
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.repository }}
+  
 jobs:
   prepare:
     runs-on:
