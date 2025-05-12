@@ -4,11 +4,13 @@ inputs:
   platform:
     type: string
     required: true
-    
+  path:
+    type: string
+    default: Library
 runs:
   using: "composite"
   steps:
     - uses: maxnowack/local-cache@v2
       with:
-        path: Library
+        path: ${{ inputs.path }}
         key: ${{ runner.os }}-${{ inputs.platform }}
