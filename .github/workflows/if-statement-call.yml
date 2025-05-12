@@ -1,0 +1,35 @@
+name: if statement test
+
+on:
+  workflow_call:
+    inputs:
+      is:
+        type: boolean
+        default: false
+      
+jobs:
+  first:
+    runs-on:
+      - self-hosted
+      - macOS
+    steps:
+      - name: fail
+        if: inputs.is == 'true'
+        run: echo "inputs.is == 'true'"
+      - if: inputs.is == true
+        run: echo "inputs.is == true"
+      - name: fail
+        if: ${{ inputs.is == 'true' }}
+        run: echo "{{ inputs.is == 'true' }}"
+  second:
+    needs: first
+    runs-on:
+      - self-hosted
+      - macOS
+    steps:
+      - if: ${{ inputs.is == true }}
+        run: echo "{{ inputs.is == true }}"
+      - if: ${{ inputs.is != false }}
+        run: echo "{{ inputs.is != false }}"
+      - if: ${{ !inputs.is }}
+        run: echo "{{ !inputs.is }}"
