@@ -1,0 +1,43 @@
+name: Unity build sample
+
+on:
+  workflow_call:
+
+jobs:
+  prepare:
+    runs-on:
+      - self-hosted
+      - macOS
+    name: Prepare
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: TinycellCorp/Actions/.github/actions/cache@main
+        with:
+          platform: ${{ env.PLATFORM }}
+  unity:
+    runs-on:
+      - self-hosted
+      - macOS
+    name: Unity build
+    steps:
+      - uses: siren403/unity-builder@custom
+        id: unity
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: src/Unity
+          gitPrivateToken: ${{ github.token }}
+          targetPlatform: Android
+          skipActivation: true
+    outputs:
+      version: steps.unity.outputs.buildVersion
+  result:
+    runs-on:
+      - self-hosted
+      - macOS
+    steps:
+      - run: echo ${{ jobs.unity.outputs.version }}
