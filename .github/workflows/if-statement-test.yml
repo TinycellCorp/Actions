@@ -11,7 +11,8 @@ on:
 jobs:
   run:
     runs-on:
-      - ubuntu-latest
+      - self-hosted
+      - macOS
     steps:
       - name: fail
         if: inputs.is == 'true'
