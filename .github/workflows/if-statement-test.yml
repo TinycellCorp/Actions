@@ -9,7 +9,7 @@ on:
         default: false
 
 concurrency:
-  group: ${{ github.repository }}
+  group: ${{ runner.name }}
       
 jobs:
   run:
