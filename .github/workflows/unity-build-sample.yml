@@ -17,6 +17,7 @@ jobs:
         with:
           platform: ${{ env.PLATFORM }}
   unity:
+    needs: prepare
     runs-on:
       - self-hosted
       - macOS
@@ -36,8 +37,9 @@ jobs:
     outputs:
       version: steps.unity.outputs.buildVersion
   result:
+    needs: unity
     runs-on:
       - self-hosted
       - macOS
     steps:
-      - run: echo ${{ jobs.unity.outputs.version }}
+      - run: echo ${{ needs.unity.outputs.version }}
