@@ -7,11 +7,6 @@ on:
         type: boolean
         required: true
         default: false
-  workflow_call:
-    inputs:
-      is:
-        type: boolean
-        default: false
 
 concurrency:
   group: ${{ github.repository_owner }}
