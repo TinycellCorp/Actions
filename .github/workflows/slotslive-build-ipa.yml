@@ -110,7 +110,7 @@ jobs:
       - name: Artifacts upload to nas
         run: |
           artifacts_name=${{ env.ARTIFACT_NAME }}.zip
-          artifacts_remote_path=${{ inputs.rclone-remote }}/${artifacts_name}
+          artifacts_remote_path=${{ inputs.rclone-remote }}/${{ env.PLATFORM }}/${artifacts_name}
           
           rclone copyto ${artifacts_name} ${artifacts_remote_path} -P
           echo "ARTIFACTS_NAME=${artifacts_name}" >> "$GITHUB_ENV"
