@@ -21,7 +21,7 @@ jobs:
       - self-hosted
       - macOS
     steps:
-      - name: Export slack title
+      - name: Export message title
         run: echo "MESSAGE_TITLE=*${{ github.repository }}* Deploy apk" >> "$GITHUB_ENV"
 
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
