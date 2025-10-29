@@ -55,7 +55,6 @@ jobs:
           path: Actions
           sparse-checkout: |
             src/fastlane
-          ref: fix/build_ios_app
       - name: Copy fastlane files
         run: cp -R Actions/src/fastlane/ build/iOS/iOS
       - uses: TinycellCorp/Actions/.github/actions/synology-chat/text@main
