@@ -34,7 +34,8 @@ platform :ios do
 
     build_app(
       workspace: "Unity-iPhone.xcworkspace", 
-      scheme: "Unity-iPhone"
+      scheme: "Unity-iPhone",
+      export_method: "app-store-connect",
       export_options: {
         signingStyle: "automatic", 
         teamID: ENV["TEAM_ID"]
