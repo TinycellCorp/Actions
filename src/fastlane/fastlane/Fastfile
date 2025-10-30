@@ -34,11 +34,7 @@ platform :ios do
 
     build_app(
       workspace: "Unity-iPhone.xcworkspace", 
-      scheme: "Unity-iPhone",
-      export_options: {
-        signingStyle: "automatic", 
-        teamID: ENV["TEAM_ID"]
-      }
+      scheme: "Unity-iPhone"
     )
 
     # apple_id (env.PILOT_APPLE_ID): use app store connect > app > app information > apple id
