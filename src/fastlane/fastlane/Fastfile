@@ -35,7 +35,6 @@ platform :ios do
     build_app(
       workspace: "Unity-iPhone.xcworkspace", 
       scheme: "Unity-iPhone",
-      xcargs: "-skipPackageSignatureValidation",
       export_options: {
         export_xcargs: "-allowProvisioningUpdates"
       }
