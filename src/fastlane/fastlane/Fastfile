@@ -32,6 +32,8 @@ platform :ios do
     #   build_number: latest_testflight_build_number + 1
     # })
 
+    clear_derived_data
+
     build_app(
       workspace: "Unity-iPhone.xcworkspace", 
       scheme: "Unity-iPhone",
