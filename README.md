@@ -102,3 +102,23 @@ jobs:
 | --- | --- |
 | `slack-channel-id` | `배포 알림을 보낼 타이니셀 슬랙 채널아이디. 봇이 초대되어 있어야 한다.` |
 | `skip-testflight` | `배포 프로세스에서 테스트 플라이트 업로드를 스킵` |
+
+## iOS 코드 서명 인증서
+
+### 인증서 갱신 시 주의사항 (macOS Sequoia)
+
+macOS 15(Sequoia)부터 Xcode에서 생성한 인증서의 private key 접근 제어가 강화되었다.
+
+Xcode의 Manage Certificates에서 인증서를 생성하면 **해당 Xcode 앱 경로만 접근 허용**으로 설정되어, 다른 버전의 Xcode나 `codesign` 바이너리가 키에 접근할 수 없다.
+
+인증서 갱신 후 CI 빌드가 `errSecInternalComponent`로 실패하면 아래 3가지 방법 중 하나로 해결:
+
+| 방법 | 설명 | 비고 |
+|------|------|------|
+| CI Xcode 버전으로 생성 | 인증서를 CI에서 사용하는 Xcode 버전으로 생성 | Xcode 버전 변경 시 재생성 필요 |
+| 키 접근 모든 앱 허용 | Keychain Access에서 private key > 접근 제어 > "모든 응용 프로그램이 접근 가능"으로 변경 | 인증서 갱신 시 다시 설정 필요 |
+| partition list 설정 | `security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k <password> login.keychain-db` | Fastfile `before_all`에 포함되어 자동 처리 |
+
+> [!NOTE]
+> 현재 Fastfile의 `before_all`에 partition list 설정이 포함되어 있어 자동으로 처리된다.
+> 기존 정상 인증서에는 영향 없음.
